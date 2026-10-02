@@ -28,6 +28,36 @@ step(40);key('keydown','KeyD');const beforeX=t.g.p.x;step(20);assert(t.g.p.x>bef
 const oldAim={...t.g.aim};t.g.p.xp=t.g.p.need;t.openUpgrade();assert.equal(t.state,'upgrade');assert.equal(t.keys.size,0);assert(t.blocked.has('KeyD'));assert.equal(w.document.querySelectorAll('.upgrade-card').length,3);const frozen=t.g.time;step(100);assert.equal(t.g.time,frozen);assert.equal(t.g.aim.x,oldAim.x);
 t.unlockChoice();w.document.querySelector('.upgrade-card').click();assert.equal(t.state,'playing');assert(t.g.ready>0);assert(t.g.p.invuln>=1.2);step(31);assert.equal(t.g.time,frozen,'resume guard freezes world');const stopped=t.g.p.x;key('keydown','KeyD',true);step(20);assert.equal(t.g.p.x,stopped,'held key cannot leak through upgrade');key('keyup','KeyD');key('keydown','KeyD');step(10);assert(t.g.p.x>stopped);key('keyup','KeyD');
 t.pauseRun();const paused=t.g.time;step(60);assert.equal(t.g.time,paused);key('keydown','KeyP');assert.equal(t.state,'playing');key('keyup','KeyP');w.dispatchEvent(new w.Event('blur'));assert.equal(t.state,'playing','blurring does not pause the run');
+// Upgrades and automated transitions must not steal typing focus or consume typed shortcuts.
+for(const useBot of [false,true])for(const tag of ['textarea','input','div']){
+  t.startRun(useBot);t.g.ready=0;t.g.spawn=999;
+  const editor=w.document.createElement(tag);if(tag==='div'){editor.setAttribute('contenteditable','true');editor.tabIndex=0;}
+  w.document.body.append(editor);editor.focus();assert.equal(w.document.activeElement,editor);
+  t.g.p.xp=t.g.p.need;t.openUpgrade();
+  assert.equal(w.document.activeElement,editor,'upgrade preserves the editor focus');
+  t.unlockChoice();const sound=w.document.getElementById('sound-button').textContent;
+  for(const code of ['KeyW','Space','KeyP','Escape','KeyM','KeyB','Digit1']){
+    const e=new w.KeyboardEvent('keydown',{code,bubbles:true,cancelable:true});editor.dispatchEvent(e);
+    assert.equal(e.defaultPrevented,false,'typed shortcuts keep their normal browser behavior');
+    editor.dispatchEvent(new w.KeyboardEvent('keyup',{code,bubbles:true}));
+  }
+  assert.equal(t.state,'upgrade');assert.equal(Object.keys(t.g.ranks).length,0);
+  assert.equal(w.document.getElementById('sound-button').textContent,sound);assert.equal(t.keys.size,0);
+  t.chooseUpgrade(0);assert.equal(w.document.activeElement,editor,'resume preserves the editor focus');
+  t.completeWorld1();assert.equal(w.document.activeElement,editor,'world completion preserves typing');
+  t.enterWorld2();assert.equal(w.document.activeElement,editor,'automatic world entry preserves typing');
+  t.g.ready=0;t.g.p.invuln=0;t.hurt(999,0,0);assert.equal(t.state,'over');
+  assert.equal(w.document.activeElement,editor,'game over preserves typing');editor.remove();
+}
+// Losing page focus is distinct from editing inside the game's document.
+t.startRun();const nativeHasFocus=w.document.hasFocus;
+w.document.hasFocus=()=>false;t.g.p.xp=t.g.p.need;t.openUpgrade();
+assert.equal(w.document.activeElement,canvas,'an unfocused page must not focus an upgrade');
+t.unlockChoice();t.chooseUpgrade(0);assert.equal(w.document.activeElement,canvas);
+w.document.hasFocus=nativeHasFocus;
+t.startRun();t.g.p.xp=t.g.p.need;t.openUpgrade();
+assert.equal(w.document.activeElement,w.document.querySelector('.upgrade-card'),'focused human play still supports keyboard upgrade selection');
+t.startRun(true);t.g.p.xp=t.g.p.need;t.openUpgrade();assert.equal(w.document.activeElement,canvas,'bot upgrades do not move focus');
 t.startRun();t.g.ready=0;t.g.spawn=999;t.g.p.invuln=0;const initialHp=t.g.p.hp;t.hurt(18,0,0);t.hurt(18,0,0);assert.equal(t.g.p.hp,initialHp-18);step(60);t.hurt(18,0,0);assert.equal(t.g.p.hp,initialHp-18);step(24);t.hurt(18,0,0);assert.equal(t.g.p.hp,initialHp-36);
 for(const [x,y] of [[24,125],[1256,125],[24,650],[1256,650],[640,360]]){t.g.p.x=x;t.g.p.y=y;for(let i=0;i<100;i++){t.g.enemies=[];t.edgeSpawn('stalker');const e=t.g.enemies[0];assert(Math.hypot(e.x-x,e.y-y)>300,'edge spawn safely separated');assert(e.x<0||e.x>t.W||e.y<0||e.y>t.H);}}
 for(const level of [1,2,3,4,5,10,40]){t.startRun();t.g.ready=0;t.g.spawn=999;t.g.p.level=level;t.g.p.need=t.xpNeeded(level);t.g.p.xp=t.g.p.need;t.g.time=.5;t.update(.01);assert.equal(t.state,'upgrade','every level upgrades from XP with no time gate');assert.equal(t.g.p.level,level+1);}t.startRun();t.g.ready=0;t.g.spawn=999;t.g.time=200;t.update(.01);assert.equal(t.state,'playing','time alone never grants upgrades');t.g.p.xp=t.g.p.need-1;t.g.drops.push({x:t.g.p.x,y:t.g.p.y,vx:0,vy:0,value:10,heal:false,life:40,r:6});t.update(.01);assert.equal(t.state,'upgrade');assert.equal(t.g.p.xp,9,'all surplus core XP carries forward');assert.equal(t.g.score,0,'XP no longer converts to score');t.unlockChoice();t.chooseUpgrade(0);t.g.ready=0;step(120);assert.equal(t.state,'playing','one core cannot chain early upgrades');assert(!w.document.getElementById('xp-label').textContent.includes('UPGRADE IN'));
@@ -119,7 +149,12 @@ t.startRun();t.g.ready=0;t.g.spawn=999;t.g.p.invuln=99999;t.spawnEnemy('warden',
 t.startRun();t.g.ready=0;t.g.spawn=999;t.g.time=300;t.g.p.level=50;
 // The finale is finite, warden-only, and cannot finish before all arrivals.
 t.g.p.invuln=99999;t.g.nextBoss=0;t.update(.01);assert(t.g.finalRound);assert.equal(t.g.finalRound.total,20);t.g.enemies=[];t.g.spawn=999;t.update(.01);assert.equal(t.state,'playing','empty field before final arrivals does not win');
-for(let i=0;i<25;i++)t.spawnWave();assert.equal(t.g.finalRound.spawned,20);assert.equal(t.g.enemies.length,20);assert(t.g.enemies.every(e=>e.type==='warden'&&e.finalWarden));t.spawnEnemy('brute',600,300);assert.equal(t.g.enemies.length,20,'final round rejects non-warden spawns');for(const e of [...t.g.enemies])t.kill(e);assert.equal(t.g.finalRound.defeated,20);t.g.spawn=0;t.update(.01);assert.equal(t.state,'worldclear');assert.equal(t.world2Unlocked,true);assert.equal(w.localStorage.getItem('void-wake-world2-v2'),'yes');assert.equal(w.document.getElementById('world2-button').disabled,false);const clearTime=t.g.time,clearScore=t.g.score;step(30);assert.equal(t.g.time,clearTime,'world transition freezes simulation');w.document.getElementById('enter-world2').click();assert.equal(t.state,'playing');assert.equal(t.g.world,2);assert.equal(t.g.time,clearTime);assert.equal(t.g.score,clearScore);assert.equal(t.g.worldTime,0);assert.equal(t.g.p.level,1);assert.equal(t.g.p.hp,180);assert.equal(t.g.p.projectiles,2);assert.equal(t.g.enemies.length,0);assert(t.g.ready>=1);assert(t.g.p.invuln>=3);assert(w.document.body.classList.contains('world-theme'));assert.equal(t.activeUpgrades().length,24);assert(t.activeUpgrades().every(u=>u.max===1));t.render();writeImage('chloris-entry-qa.png',canvas.native.toBuffer('image/png'));
+for(let i=0;i<25;i++)t.spawnWave();assert.equal(t.g.finalRound.spawned,20);assert.equal(t.g.enemies.length,20);assert(t.g.enemies.every(e=>e.type==='warden'&&e.finalWarden));t.spawnEnemy('brute',600,300);assert.equal(t.g.enemies.length,20,'final round rejects non-warden spawns');for(const e of [...t.g.enemies])t.kill(e);assert.equal(t.g.finalRound.defeated,20);t.g.spawn=0;t.update(.01);assert.equal(t.state,'worldclear');assert.equal(t.world2Unlocked,true);assert.equal(w.localStorage.getItem('void-wake-world2-v2'),'yes');assert.equal(w.document.getElementById('world2-button').disabled,false);const clearTime=t.g.time,clearScore=t.g.score;step(30);assert.equal(t.g.time,clearTime,'world transition freezes simulation');w.document.getElementById('enter-world2').click();assert.equal(t.state,'playing');assert.equal(t.g.world,2);assert.equal(t.g.time,clearTime);assert.equal(t.g.score,clearScore);assert.equal(t.g.worldTime,0);assert.equal(t.g.p.level,1);assert.equal(t.g.p.hp,180);assert.equal(t.g.p.projectiles,1);assert.equal(t.g.enemies.length,0);assert(t.g.ready>=1);assert(t.g.p.invuln>=3);assert(w.document.body.classList.contains('world-theme'));assert.equal(t.activeUpgrades().length,24);assert(t.activeUpgrades().every(u=>u.max===1));t.render();writeImage('chloris-entry-qa.png',canvas.native.toBuffer('image/png'));
+// Fresh World 2 starts and restarts shoot once; the unique bolt upgrade adds two.
+t.g.bullets=[];t.shoot();assert.equal(t.g.bullets.length,1);assert(Math.abs(t.g.bullets[0].vx)<1e-10,'starting bolt follows the aim');
+const bloom=t.gardenUpgrades.find(u=>u.id==='twins');bloom.apply(t.g.p);
+t.g.bullets=[];t.shoot();assert.equal(t.g.bullets.length,3);
+t.startRun(false,2);assert.equal(t.g.p.projectiles,1);t.g.bullets=[];t.shoot();assert.equal(t.g.bullets.length,1);
 // Enemy mechanics: aimed thorn fans, telegraphed burrowing, timed armor, and hive fields.
 t.g.ready=0;t.g.spawn=999;t.g.p.invuln=99999;t.spawnEnemy('thorn',950,350);const thorn=t.g.enemies[0];thorn.cool=0;thorn.age=2;t.updateEnemies(.01);assert.equal(thorn.phase,'windup');t.updateEnemies(1);assert(t.g.hostile.length>=3);
 t.g.enemies=[];t.spawnEnemy('burrower',930,300);const worm=t.g.enemies[0];worm.cool=0;worm.age=2;t.updateEnemies(.01);assert.equal(worm.phase,'buried');t.updateEnemies(.7);assert.equal(worm.phase,'emerge');const emergeHP=t.g.p.hp;t.updateEnemies(.2);assert.equal(t.g.p.hp,emergeHP,'telegraphed ambusher cannot immediately hit');t.updateEnemies(1.3);assert.equal(worm.phase,'charge');

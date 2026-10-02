@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.3.3.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.3.4.
 
 ## Original brief
 
@@ -43,7 +43,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.0 | Owner found the scene too empty/dim. Rebuilt art direction with a dense starfield, teal/violet nebulae, warm stellar highlights, and a brighter planet. |
 | v2.3.1 | Dimmed large decorative stars and their glow so hostile bullets stand out. Moved the planet from upper right to horizontally centered above the arena. |
 | v2.3.2 | Fixed surplus XP being truncated when the final upgrade was chosen in either world, and in the completed-tree guard. All banked XP now remains available for subsequent levels. |
-| **v2.3.3 — current** | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
+| v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
+| **v2.3.4 — current** | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 
 ## Current XP curve
 

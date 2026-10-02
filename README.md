@@ -1,6 +1,6 @@
 # Void Wake
 
-A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.3**. Prepared for a GitHub/Codex handoff on October 2, 2026.
+A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.4**. Prepared for a GitHub/Codex handoff on October 2, 2026.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -24,10 +24,11 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 - World 1: the evolving Kestrel-9 spaceship, five space regions, multiple enemy tactics, and 20 one-time ship systems.
 - XP-only upgrades at every level. Cost starts at 70 XP, grows smoothly, and never exceeds 1,000 XP. Surplus XP carries forward.
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
-- World 2: Chloris, a living garden, the Verdant Manta, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
+- World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
 - The bot moves, aims, collects XP, selects upgrades, and enters World 2. It follows a corner-oriented patrol and changes target quadrants every 4.2 seconds.
 - Health, damage invulnerability, safe spawns, particles, effects, procedural sound, pause, restart, and a stored high score.
 - Worker/interval background simulation continues when the tab loses focus, subject to browser throttling or suspension.
+- Bot upgrades and automatic transitions preserve typing focus; game shortcuts ignore active text editors.
 - Stars are smaller and dimmer than hostile shots; the blue planet is horizontally centered at the top.
 
 High score, sound preference, and World 2 unlock are stored in browser `localStorage`. This branch does **not** contain a full-run save/continue system. Storage is browser/profile/origin-specific; moving from a local file to a hosted URL does not migrate those values automatically.

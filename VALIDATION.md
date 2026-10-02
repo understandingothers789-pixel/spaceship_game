@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.3.3**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP and bot avoidance fixes.
+Current game: **v2.3.4**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, and World 2 starting-shot changes.
 
 ## How to run the portable suite
 
@@ -77,3 +77,14 @@ Complete v2.3.2 HTML SHA-256: `4974c3d6cfe70fe3e7073612b632913780a6e21e8a2c4f244
 - Canvas rendering is unchanged. Real-browser playback, physical touch, audio, and real hidden-tab throttling retain the limitations recorded above; the fix is supported by simulated regression evidence.
 
 Complete v2.3.3 HTML SHA-256: `209221f8a04045fc505e6916e0da62eecacacee8e21c9366917a6811ccaf3f0b`.
+
+## v2.3.4 verification — October 2, 2026
+
+- The existing v2.3.3 suite passed before changes. A new editor-focus regression failed against that release: an upgrade focused its first button instead of preserving the active textarea.
+- Automatic UI focus now requires a focused page, human control, and no active text editor. Bot upgrade selection, world completion/entry, and game over do not take focus. Explicit Play/Watch Bot still focus the arena. Text input, textarea, editable content, and textbox roles do not trigger game keyboard shortcuts; entering an editor clears held movement without pausing combat.
+- At the owner's request, fresh World 2 entry, direct starts, and restarts now begin with one projectile. The unique Threefold Bloom upgrade adds two for a three-shot volley. Updated the ship description and upgrade text. This lowers starting World 2 firepower; stress tests are not a survival-balance study.
+- Full `npm test` passed after the implementation under supported Node 24.19.0, with no DOM/runtime errors. New tests cover editor focus during upgrades, resume, world completion/entry and game over in both bot/human modes; typed shortcut isolation; unfocused-page behavior; retained keyboard selection for focused human play; and actual one/three/one-shot volleys across World 2 entry, upgrade and restart.
+- Existing bot-circle/dodge, XP carry, input isolation, shared-clock, entity-cap, stress and finale checks passed. Version/changelog and documentation were then updated to v2.3.4. The distributed game remains one offline HTML file with no shipped test hooks.
+- This verifies game focus calls in JSDOM. The exact ChatGPT preview/parent-frame focus behavior still needs a real-browser check; managed Chromium's local-file limitation remains as recorded above.
+
+Complete v2.3.4 HTML SHA-256: `b886013290933e344c7ffcd2a28a41437850eb75989d45b2603d612b64630ce7`.
