@@ -1,0 +1,16 @@
+{
+  "name": "void-wake",
+  "version": "2.3.1",
+  "private": true,
+  "description": "A complete offline two-world spaceship survival game in one HTML file.",
+  "scripts": {
+    "test": "node tests/qa.cjs"
+  },
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "devDependencies": {
+    "jsdom": "30.1.1",
+    "@napi-rs/canvas": "0.1.100"
+  }
+}
