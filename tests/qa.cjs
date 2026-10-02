@@ -69,6 +69,49 @@ t.g.p.emergencyWarp=true;t.g.p.hp=5;t.g.p.invuln=0;t.hurt(20,0,0);assert.equal(t
 t.startRun(true);for(const u of t.upgradeList){u.apply(t.g.p);t.g.ranks[u.id]=1;}t.g.upgradesComplete=true;t.g.p.level=31;t.g.p.need=1000;t.g.p.invuln=99999;t.g.ready=0;t.g.p.xp=0;let spaceMaxEnemies=0,spaceMaxBullets=0,spaceMaxFields=0,spaceMaxFX=0;const spaceStart=performance.now();for(let i=0;i<60*120;i++){t.update(1/60);spaceMaxEnemies=Math.max(spaceMaxEnemies,t.g.enemies.length);spaceMaxBullets=Math.max(spaceMaxBullets,t.g.bullets.length);spaceMaxFields=Math.max(spaceMaxFields,t.g.fields.length);spaceMaxFX=Math.max(spaceMaxFX,t.g.fx.length);}const spaceElapsed=performance.now()-spaceStart;assert.equal(t.state,'playing');assert(spaceMaxEnemies<=150&&spaceMaxBullets<=340&&spaceMaxFields<=32&&spaceMaxFX<=80);assert(t.g.p.level>=32,'space build keeps collecting XP after all systems are installed');for(const e of [...t.g.enemies,...t.g.bullets,...t.g.hostile,...t.g.fields])assert(Number.isFinite(e.x)&&Number.isFinite(e.y));t.render();writeImage('space-rebuild-qa.png',canvas.native.toBuffer('image/png'));w.innerWidth=390;w.innerHeight=844;t.resize();t.render();writeImage('space-rebuild-mobile-qa.png',canvas.native.toBuffer('image/png'));w.innerWidth=1280;w.innerHeight=720;t.resize();
 // The bot reaches corner cores instead of only orbiting the center.
 w.innerWidth=1280;w.innerHeight=720;t.resize();t.startRun(true);t.g.ready=0;t.g.spawn=999;t.g.p.invuln=99999;t.g.p.x=260;t.g.p.y=200;t.g.drops.push({x:80,y:130,vx:0,vy:0,value:10,heal:false,life:40,r:6});let closestCorner=Infinity;for(let i=0;i<180;i++){t.update(1/60);closestCorner=Math.min(closestCorner,Math.hypot(t.g.p.x-80,t.g.p.y-130));}assert(t.g.p.xp>=10,'corner XP is collected by the bot');assert(closestCorner<85,'bot travels toward the corner');assert(Math.hypot(t.g.bot.move.x,t.g.bot.move.y)>.99);
+// A late-World-2 bot must route around warning circles instead of hovering at an edge.
+t.completeWorld1();
+for(const [width,height] of [[1280,720],[390,844]])for(const bottom of [false,true])for(const kind of ['root','spore']){
+  w.innerWidth=width;w.innerHeight=height;t.resize();t.startRun(true,2);
+  for(const u of t.gardenUpgrades){u.apply(t.g.p);t.g.ranks[u.id]=1;}t.g.upgradesComplete=true;
+  const p=t.g.p,scale=Math.min(width,height)/720,y=bottom?t.H-45/scale-38:90/scale+38;
+  p.x=t.W*.5;p.y=y;p.level=48;p.need=t.xpNeeded(48);p.invuln=999;p.dashCd=999;
+  t.g.ready=0;t.g.spawn=999;t.g.time=70;t.g.worldTime=70;t.g.season=2;
+  t.g.bot.quadrant=bottom?3:1;t.g.bot.quadrantSince=70;
+  t.plantField(p.x+(bottom?-40:40),y,70,{kind,warn:1.9,duration:3});
+  const field=t.g.fields[0];let checkpoint=null;
+  for(let i=0;i<108;i++){
+    const quadrant=t.g.bot.quadrant,before={x:p.x,y:p.y};t.update(1/60);
+    if(t.g.bot.quadrant!==quadrant){
+      const left=Math.min(80,t.W*.12),route=[{x:left,y:90/scale+38},{x:t.W-left,y:90/scale+38},{x:t.W-left,y:t.H-45/scale-38},{x:left,y:t.H-45/scale-38}];
+      assert(Math.hypot(before.x-route[quadrant].x,before.y-route[quadrant].y)<65,'corner target changes only upon arrival during this short detour');
+    }
+    if(i===59)checkpoint={x:p.x,y:p.y};
+  }
+  assert(field.age<field.warn,'circle is still in its warning phase');
+  assert(Math.hypot(p.x-checkpoint.x,p.y-checkpoint.y)>70,`${width}x${height} ${kind}: bot keeps traveling during warning`);
+  assert(Math.hypot(p.x-field.x,p.y-field.y)>field.r+p.r,'bot clears the warning circle before activation');
+}
+w.innerWidth=1280;w.innerHeight=720;t.resize();
+// Starting at the center also has an escape direction; friendly circles do not repel.
+for(const kind of ['root','spore']){
+  t.startRun(true,2);t.g.ready=0;t.g.spawn=999;t.g.p.level=48;t.g.p.invuln=999;t.g.p.dashCd=999;
+  t.g.time=70;t.g.worldTime=70;t.g.season=2;t.g.bot.quadrantSince=70;
+  t.plantField(t.g.p.x,t.g.p.y,70,{kind,warn:1.9,duration:3});const field=t.g.fields[0];
+  step(60);assert(Math.hypot(t.g.p.x-field.x,t.g.p.y-field.y)>field.r+t.g.p.r,'bot escapes from the center before activation');
+}
+t.startRun(true,2);t.g.ready=0;t.thinkBot();const friendlyMove={...t.g.bot.move};
+t.plantField(t.g.p.x,t.g.p.y,95,{friendly:true,kind:'ice'});t.thinkBot();
+assert.equal(t.g.bot.move.x,friendlyMove.x);assert.equal(t.g.bot.move.y,friendlyMove.y);
+// A shot on either side must push the bot away from its projected path.
+for(const world of [1,2])for(const [vx,vy,offsetX,offsetY,quadrant] of [[225,0,0,30,0],[225,0,0,-30,2],[0,225,30,0,0],[0,225,-30,0,2]]){
+  t.startRun(true,world);t.g.ready=0;t.g.p.level=48;t.g.time=70;t.g.bot.quadrantSince=70;
+  t.g.bot.quadrant=quadrant;t.g.p.dashCd=999;t.thinkBot();
+  const before={...t.g.bot.move};
+  t.g.hostile=[{x:t.g.p.x-vx*.5-offsetX,y:t.g.p.y-vy*.5-offsetY,vx,vy,r:5,life:8,damage:20,dead:false}];
+  t.thinkBot();const after=t.g.bot.move;
+  assert((after.x-before.x)*offsetX+(after.y-before.y)*offsetY>0,'dodge turns away from the shot path');
+}
 // Later levels raise the chance and strength of warden spawns.
 t.startRun();t.g.ready=0;t.g.spawn=999;t.g.time=300;t.g.p.level=40;assert.equal(t.latePressure(),0);t.g.p.level=41;assert(t.latePressure()>0);t.g.p.level=49;assert(t.latePressure()>=.9);t.g.p.level=50;assert.equal(t.latePressure(),1);
 // Existing enemies are cleared before the twenty final wardens arrive.

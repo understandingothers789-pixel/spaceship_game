@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.3.2**. The original GitHub handoff was v2.3.1; the release below fixes surplus XP loss when an upgrade tree is completed.
+Current game: **v2.3.3**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP and bot avoidance fixes.
 
 ## How to run the portable suite
 
@@ -66,3 +66,14 @@ The final HTML SHA-256 is `44deddbe060d87ec9c2449338e5c19d1f61726b71655ed37fe8ac
 - Attempted a headless Chromium check of the local HTML. Managed browser policy blocked the `file://` page with “Your organization doesn’t allow you to view this site,” so no real-browser gameplay validation is claimed. Audio, physical touch, and actual browser background throttling remain manual checks.
 
 Complete v2.3.2 HTML SHA-256: `4974c3d6cfe70fe3e7073612b632913780a6e21e8a2c4f244177644c9ac15436`.
+
+## v2.3.3 verification — October 2, 2026
+
+- Investigated the report of a bot trapped in a loading/spinning circle in the late 40s of World 2. Reproduced a level-48 bot jittering beside a warning circle near the arena edge: its radial avoidance opposed its corner patrol, leaving almost no net travel until the route or hazard changed. This is a reproducible match for the reported behavior; the original browser session was not available.
+- The existing v2.3.2 suite passed before changes. A new warning-circle movement regression failed against that code. A separate probe also found that the projectile dodge force pointed toward the incoming shot path rather than away from it.
+- Garden-circle avoidance now adds a consistent detour and chooses a side with room inside the arena. It handles an exact-center start without changing the corner schedule. Corrected the shared projectile dodge sign. Friendly fields still do not repel the bot. Upgrade/resume guards remain intact.
+- Full `npm test` passed under Node 24.19.0 with no DOM/runtime errors. New cases exercise a full World 2 build at level 48 with root/spore circles at top/bottom edges in 1280×720 and 390×844 layouts, center starts, friendly circles, and shot paths on all four sides in both worlds. The tests verify actual displacement, clearance before activation, and corner-target changes only on arrival during the detour.
+- Existing stress simulations (240/120/180 seconds), surplus XP, input isolation, corner pickups, shared background clock, exact 20-warden finale, World 2 transition, and World 2 finale all passed. Entity caps and offline resource checks passed.
+- Canvas rendering is unchanged. Real-browser playback, physical touch, audio, and real hidden-tab throttling retain the limitations recorded above; the fix is supported by simulated regression evidence.
+
+Complete v2.3.3 HTML SHA-256: `209221f8a04045fc505e6916e0da62eecacacee8e21c9366917a6811ccaf3f0b`.

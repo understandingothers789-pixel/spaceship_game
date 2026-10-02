@@ -1,6 +1,6 @@
 {
   "name": "void-wake",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "private": true,
   "description": "A complete offline two-world spaceship survival game in one HTML file.",
   "scripts": {
