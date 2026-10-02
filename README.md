@@ -4,6 +4,8 @@ A complete 2D spaceship survival game in one offline HTML file. Current version:
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
+The standing Codex delivery preference is in [`AGENTS.md`](AGENTS.md): finish checks, update the project log, and merge routine changes into `main`. Edit that file to change this behavior.
+
 ## Play immediately
 
 Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play** to control the ship or **Watch Bot** to watch the built-in pilot. The game itself needs no install, server, npm, account, internet connection, or API key.

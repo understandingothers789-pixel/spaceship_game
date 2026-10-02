@@ -83,6 +83,10 @@ A development bot sample after timer removal reached its first upgrade at about 
 
 Not every intermediate version has a separate saved HTML snapshot. These files are actual archived bytes, not recreated versions. Their behavior is historical and can conflict with the current instructions.
 
+## Ongoing Codex workflow preference
+
+The owner asked Codex to merge completed, checked changes into `main` by default and to record each code change in the project history. This standing preference is stored in `AGENTS.md`; edit its default-delivery bullets to change it. Update `README.md` and the current release log when the preference changes.
+
 ## Handoff boundaries
 
 - No full-run save/continue or replay system exists in this particular branch. High score, sound, and the World 2 unlock are persisted.
