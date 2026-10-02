@@ -97,6 +97,26 @@ t.mainMenu();assert(!w.document.body.classList.contains('world-theme'));assert.e
 // Auto-pilot transitions to World 2 without needing a click.
 t.startRun(true);let transition=null;w.setTimeout=(fn,ms)=>{assert.equal(ms,2000);transition=fn;return 1;};t.completeWorld1();assert.equal(t.state,'worldclear');assert.equal(typeof transition,'function');transition();assert.equal(t.state,'playing');assert.equal(t.g.world,2);assert.equal(t.botEnabled,true);w.setTimeout=nativeTimeout;
 t.startRun(true);t.g.ready=0;t.g.spawn=999;t.g.p.invuln=99999;t.frame(1000);t.frame(2000);assert(t.g.time>=.98,'simulation catches up after a one-second background frame');w.dispatchEvent(new w.Event('blur'));assert.equal(t.state,'playing','losing focus no longer pauses the run');t.frame(62000);assert(t.g.time>=4.9,'long background gaps advance the game instead of freezing');Object.defineProperty(w.document,'hidden',{configurable:true,value:true});w.document.dispatchEvent(new w.Event('visibilitychange'));assert.equal(t.state,'playing','hiding the tab does not pause the game');assert(backgroundTimers.some(x=>x.ms===200),'offline background timer is installed when workers are unavailable');const oldNow=w.performance.now;w.performance.now=()=>63000;const backgroundTime=t.g.time;backgroundTimers.find(x=>x.ms===200).fn();assert(t.g.time>backgroundTime+.9,'hidden-tab timer advances simulation without animation frames');w.performance.now=oldNow;
+// Completing either one-time tree keeps banked XP and spends it on later levels.
+for(const world of [1,2]){
+  t.startRun(false,world);t.g.ready=0;t.g.spawn=999;
+  const tree=t.activeUpgrades(),p=t.g.p,last=tree.at(-1);
+  for(const u of tree.slice(0,-1))t.g.ranks[u.id]=1;
+  p.level=tree.length;p.need=t.xpNeeded(p.level);
+  const surplus=t.xpNeeded(p.level+1)*2+37;
+  p.xp=p.need+surplus;t.update(.01);
+  assert.equal(t.state,'upgrade');assert.equal(t.choices.length,1);assert.equal(t.choices[0].id,last.id);
+  t.unlockChoice();t.chooseUpgrade(0);
+  assert.equal(p.xp,surplus,`World ${world}: final purchase must preserve all surplus XP`);
+  assert.equal(t.g.upgradesComplete,true);assert.equal(t.state,'playing');
+  t.openUpgrade();assert.equal(p.xp,surplus,`World ${world}: completed-tree guard must preserve XP`);
+  assert.equal(t.state,'playing');assert.equal(t.choices.length,0);
+  t.g.ready=0;const level=p.level,cost=p.need,score=t.g.score;t.update(.01);
+  assert.equal(p.level,level+1);assert.equal(p.xp,surplus-cost);assert.equal(t.state,'playing');
+  const nextCost=p.need;t.update(.01);
+  assert.equal(p.level,level+2);assert.equal(p.xp,surplus-cost-nextCost);
+  assert.equal(t.g.score,score,'banked XP never converts to score');assert.equal(t.choices.length,0);
+}
 Object.defineProperty(w,'localStorage',{get(){throw new Error('blocked storage');}});t.startRun();t.g.ready=0;t.g.p.invuln=0;t.hurt(999,0,0);assert.equal(t.state,'over');assert.equal(errors.length,0);
 assert(!/lastUpgrade|UPGRADE IN|20-second upgrade wait|BONUS SCORE/.test(original),'old timer and overflow features are completely removed');
 assert(!/<script[^>]*src=|<link[^>]*href=|https?:\/\//i.test(original),'no external resources');

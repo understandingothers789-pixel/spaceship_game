@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.3.1**. The packaged `game.html` is byte-for-byte the latest deliverable from this project. No gameplay changes were made while preparing this GitHub handoff.
+Current game: **v2.3.2**. The original GitHub handoff was v2.3.1; the release below fixes surplus XP loss when an upgrade tree is completed.
 
 ## How to run the portable suite
 
@@ -55,3 +55,14 @@ Actual long-run/boss verification may use development tooling, but do not leave 
 The portable `npm test` command passed using the pinned tool versions already installed in the preparation environment. No fresh registry install was performed here. The run reported no DOM/runtime errors. All three stress simulations, upgrade/bot checks, world transition checks, and finale checks passed. Generated screenshots were kept as ignored local artifacts.
 
 The final HTML SHA-256 is `44deddbe060d87ec9c2449338e5c19d1f61726b71655ed37fe8ac3085ffc37b7`. The copy inside this package matches the latest standalone game byte-for-byte.
+
+## v2.3.2 verification — October 2, 2026
+
+- Used supported Node v24.19.0 and npm 11.9.0. Installed only the existing pinned dev dependencies and their dependencies, with lifecycle scripts disabled. The default npm cache directory was unavailable; installation succeeded using a cache under `/tmp`. Added the generated lockfile and ignored `node_modules/` and `tests/artifacts/`.
+- The unmodified v2.3.1 suite passed with no DOM/runtime errors.
+- Added a regression for surplus XP on the final upgrade purchase in both worlds, the completed-tree guard, and spending the carried XP on two later levels without repeat menus or conversion to score. It failed against v2.3.1: World 1 retained 420 XP instead of the earned 877 XP.
+- Removed the two XP clamps in `chooseUpgrade` and `openUpgrade`. The complete suite then passed, including the new cases, all three stress simulations (240 seconds of World 1, 120 seconds of its full build, 180 seconds of World 2), the 20-warden finale, World 2 unlock/transition and finale, bot controls, upgrade isolation, and hidden-tab interval/shared-clock checks. No DOM/runtime errors were reported.
+- Inspected generated desktop and portrait Canvas PNGs. The starfield remains subdued and the opening planet remains centered above the arena; rendering code was unchanged.
+- Attempted a headless Chromium check of the local HTML. Managed browser policy blocked the `file://` page with “Your organization doesn’t allow you to view this site,” so no real-browser gameplay validation is claimed. Audio, physical touch, and actual browser background throttling remain manual checks.
+
+Complete v2.3.2 HTML SHA-256: `4974c3d6cfe70fe3e7073612b632913780a6e21e8a2c4f244177644c9ac15436`.

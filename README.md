@@ -1,6 +1,6 @@
 # Void Wake
 
-A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.1**. Prepared for a GitHub/Codex handoff on October 2, 2026.
+A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.2**. Prepared for a GitHub/Codex handoff on October 2, 2026.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
