@@ -1,6 +1,6 @@
 # Void Wake
 
-A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.4**. Prepared for a GitHub/Codex handoff on October 2, 2026.
+A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.5**. Prepared for a GitHub/Codex handoff on October 2, 2026.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -24,6 +24,7 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 ## Current game
 
 - World 1: the evolving Kestrel-9 spaceship, five space regions, multiple enemy tactics, and 20 one-time ship systems.
+- Numerical XP and build progress remain visible after the tree is complete; Pause lists acquired systems and adaptations.
 - XP-only upgrades at every level. Cost starts at 70 XP, grows smoothly, and never exceeds 1,000 XP. Surplus XP carries forward.
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
 - World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.

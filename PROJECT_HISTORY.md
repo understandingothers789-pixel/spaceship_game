@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.3.4.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.3.5.
 
 ## Original brief
 
@@ -44,7 +44,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.1 | Dimmed large decorative stars and their glow so hostile bullets stand out. Moved the planet from upper right to horizontally centered above the arena. |
 | v2.3.2 | Fixed surplus XP being truncated when the final upgrade was chosen in either world, and in the completed-tree guard. All banked XP now remains available for subsequent levels. |
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
-| **v2.3.4 — current** | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
+| v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
+| **v2.3.5 — current** | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
 
 ## Current XP curve
 
@@ -92,3 +93,15 @@ The owner asked Codex to merge completed, checked changes into `main` by default
 - No full-run save/continue or replay system exists in this particular branch. High score, sound, and the World 2 unlock are persisted.
 - The game has not been published to GitHub as part of preparing this package. Uploading these files creates the initial GitHub history; Codex can continue from there.
 - The owner's ongoing priorities are fun, variety, readable visuals, reasonably paced upgrades, and complete downloadable code. Keep the visible version tag and short changelog.
+
+## v2.3.5 product review — October 3, 2026
+
+Reviewed the active single-file game and ran the existing suite before editing. The baseline passed, but focused probes and actual browser keyboard checks exposed gaps in its coverage.
+
+- Underground burrowers absorbed projectile hits despite rejecting damage, attracted homing and chain-lightning jumps, and pushed nearby creatures. A shared targetability guard now makes buried creatures intangible while retaining vulnerability during their visible emergence.
+- On touch devices, human aim assistance replaced the bot's priority target every tick. Touch assistance now runs during human control and selects visible targets.
+- Space was globally consumed even on menu and HUD buttons. Focused buttons now receive native keyboard activation; the arena retains Space dash. The touch DASH button also responds to click/keyboard activation, with cooldown protection after pointer activation.
+- Numeric XP stays visible after either one-time tree completes. A separate HUD row shows systems/adaptations acquired, and Pause lists the current build with the correct world-specific total and a fresh-run empty state.
+- Touch, mouse, and bot instructions stay synchronized, including touch guidance on the start screen. Narrow-screen hull labels and health values are readable without splitting the health fraction across lines.
+
+Version/changelog, project instructions, package metadata, and documentation are synchronized at v2.3.5. The original offline architecture, XP curve, one-time trees, corner patrol, shared background clock, World 1's exact 20-warden finale, distinct World 2, restrained stars, and centered planet remain in place. Validation evidence is recorded in `VALIDATION.md`.

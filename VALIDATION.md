@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.3.4**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, and World 2 starting-shot changes.
+Current game: **v2.3.5**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, and control/progress improvements.
 
 ## How to run the portable suite
 
@@ -88,3 +88,15 @@ Complete v2.3.3 HTML SHA-256: `209221f8a04045fc505e6916e0da62eecacacee8e21c93669
 - This verifies game focus calls in JSDOM. The exact ChatGPT preview/parent-frame focus behavior still needs a real-browser check; managed Chromium's local-file limitation remains as recorded above.
 
 Complete v2.3.4 HTML SHA-256: `b886013290933e344c7ffcd2a28a41437850eb75989d45b2603d612b64630ce7`.
+
+## v2.3.5 verification — October 3, 2026
+
+- Used supported Node v24.19.0 with the already installed pinned dev dependencies. The unmodified v2.3.4 suite passed. No runtime dependencies or new packages were added.
+- Five focused gameplay probes failed against v2.3.4: underground projectile absorption, buried homing acquisition, wasted chain jumps, underground separation, and touch mode replacing the bot's target. Managed Chromium also reproduced Space failing to activate Play, Resume, upgrade cards, and HUD Pause; pressing Space on HUD Pause incorrectly dashed instead.
+- Added regressions for projectile pass-through, guidance acquisition and stale locks, chain destinations, separation, visible emergence damage, human touch targeting, retained bot priority, native button shortcuts/arena dash, DASH click and pointer cooldown protection, build list/count/reset in both worlds, numerical XP after tree completion, and synchronized input instructions.
+- The final full `npm test` passed with no DOM/runtime errors after all game changes, including the 240-second World 1, 120-second full World 1 build, and 180-second World 2 simulations. Entity caps, XP carry, input isolation, focus preservation, warning-circle detours, shared background clock, exact 20-warden finale, World 2 transition/one starting bolt, and World 2 finale/victory/reset all passed. `git diff --check` passed.
+- Managed Chromium permits the standard localhost development preview (`http://127.0.0.1:8765/game.html`), allowing real-browser UI checks in this release. Actual Space presses activate Play, Resume, upgrade selection and HUD Pause. A controlled editor remains focused during bot upgrades and automatic world entry. Numeric XP and the full 24-adaptation pause list fit portrait layouts, including 390- and 320-pixel widths; long menu/pause/upgrade content scrolls without horizontal overflow. Screenshots are ignored local artifacts under `tests/artifacts/`.
+- Final release checks verified one-line health values at 390/320 pixels, touch-specific start instructions, and native Space/Enter activation of DASH. Loaded the unmodified delivered HTML without injected hooks: Space activated Play/Pause/Resume/Bot, explicit pause froze time, World 2 opened correctly, and simulation continued with network access disabled after loading. No runtime exceptions were reported; observed requests were the local HTML and its inline Blob worker. The managed local-file restriction remains, so this is an HTTP-preview check rather than a successful file-URL browser check.
+- Browser build/upgrade/transition fixtures use private hooks injected into browser memory only; the delivered HTML contains no test hooks. These UI checks complement the simulated campaign checks rather than establishing long-run survival balance. Physical touch, audible audio output, actual browser/OS background throttling, and the owner's ChatGPT preview integration still need device checks.
+
+Complete v2.3.5 HTML SHA-256: `6bed6a25d4856e5ac6b214df043b308c3ae85eace65f553e21f7a4533c192946`.

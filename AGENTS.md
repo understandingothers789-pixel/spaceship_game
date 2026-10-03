@@ -1,6 +1,6 @@
 # Void Wake — instructions for Codex
 
-Read `README.md`, `PROJECT_HISTORY.md`, and `VALIDATION.md` before changing the game. `CODEX_START_HERE.md` is the owner's setup guide. The active game is **root `game.html`**, currently v2.3.4. `history/snapshots/` contains real older files for reference; do not edit them or treat them as the active game.
+Read `README.md`, `PROJECT_HISTORY.md`, and `VALIDATION.md` before changing the game. `CODEX_START_HERE.md` is the owner's setup guide. The active game is **root `game.html`**, currently v2.3.5. `history/snapshots/` contains real older files for reference; do not edit them or treat them as the active game.
 
 ## Product constraints
 
