@@ -161,6 +161,35 @@ for(const world of [1,2])for(const [vx,vy,offsetX,offsetY,quadrant] of [[225,0,0
   t.thinkBot();const after=t.g.bot.move;
   assert((after.x-before.x)*offsetX+(after.y-before.y)*offsetY>0,'dodge turns away from the shot path');
 }
+// Level-based formations grow without extra finale enemies or unsafe arrivals.
+for(const world of [1,2])for(const [level,count] of [[1,1],[8,1],[9,2],[24,2],[25,3],[40,3]]){
+  t.startRun(false,world);t.g.p.level=level;t.g.season=0;t.g.time=t.g.worldTime=0;
+  if(world===1)t.g.space.region=t.spaceRegion();
+  const random=w.Math.random;w.Math.random=()=>.6;
+  t.spawnWave();w.Math.random=random;
+  assert.equal(t.g.enemies.length,count,`World ${world} level ${level}: formation size`);
+  assert(t.g.enemies.every(e=>Math.hypot(e.x-t.g.p.x,e.y-t.g.p.y)>300),'every escort arrives safely offscreen');
+  assert(t.g.enemies.every(e=>e.x<0||e.x>t.W||e.y<0||e.y>t.H));
+}
+for(const world of [1,2]){
+  t.startRun(false,world);const type=world===1?'stalker':'firefly';
+  const initial=t.spawnEnemy(type,900,300);t.g.p.level=30;
+  const later=t.spawnEnemy(type,900,300);assert(later.maxHp>initial.maxHp,'enemies scale with earned levels even in a fast run');
+  t.g.enemies=[];for(let i=0;i<149;i++)t.spawnEnemy(type,900,300);
+  t.g.p.level=40;t.spawnWave();assert.equal(t.g.enemies.length,150,'packs respect the existing enemy cap');
+}
+t.startRun();t.upgradeList.find(u=>u.id==='multi').apply(t.g.p);t.shoot();assert.equal(t.g.bullets.length,3,'Broadside earns a useful three-shot volley');
+
+// Killing a whole pack cannot turn Lifeweaver into an instant full repair.
+t.startRun(false,2);t.gardenUpgrades.find(u=>u.id==='siphon').apply(t.g.p);t.g.p.hp=50;
+for(let i=0;i<8;i++)t.kill(t.spawnEnemy('firefly',900,300));
+assert.equal(t.g.p.hp,51,'same-tick kills share the Lifeweaver healing limit');
+t.updateGarden(.5);t.kill(t.spawnEnemy('firefly',900,300));assert.equal(t.g.p.hp,52,'healing becomes available again during simulation');
+t.kill(t.spawnEnemy('dreadbloom',900,300));assert.equal(t.g.p.hp,77,'boss recovery is preserved even after a recent small kill');
+t.startRun();t.g.p.level=25;t.g.time=0;t.g.space.region=2;t.spawnWave();
+const escort=t.g.enemies[1],regular=t.spawnEnemy(escort.type,900,300);
+assert(escort.xp>=1&&escort.xp<regular.xp,'escort kills reward smaller XP cores instead of accelerating upgrades as fast as full spawns');
+
 // Later levels raise the chance and strength of warden spawns.
 t.startRun();t.g.ready=0;t.g.spawn=999;t.g.time=300;t.g.p.level=40;assert.equal(t.latePressure(),0);t.g.p.level=41;assert(t.latePressure()>0);t.g.p.level=49;assert(t.latePressure()>=.9);t.g.p.level=50;assert.equal(t.latePressure(),1);
 // Existing enemies are cleared before the twenty final wardens arrive.

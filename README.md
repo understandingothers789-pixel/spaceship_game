@@ -1,6 +1,6 @@
 # Void Wake
 
-A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.3.5**. Prepared for a GitHub/Codex handoff on October 2, 2026.
+A complete 2D spaceship survival game in one offline HTML file. Current version: **v2.4.0**. Prepared for a GitHub/Codex handoff on October 2, 2026.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -25,6 +25,7 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 
 - World 1: the evolving Kestrel-9 spaceship, five space regions, multiple enemy tactics, and 20 one-time ship systems.
 - Numerical XP and build progress remain visible after the tree is complete; Pause lists acquired systems and adaptations.
+- Enemy formations grow at levels 9 and 25. Escorts carry smaller XP cores; later repairs are scarcer, and stronger upgrades leave room for dodging.
 - XP-only upgrades at every level. Cost starts at 70 XP, grows smoothly, and never exceeds 1,000 XP. Surplus XP carries forward.
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
 - World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
@@ -46,6 +47,7 @@ High score, sound preference, and World 2 unlock are stored in browser `localSto
 | `CODEX_START_HERE.md` | Beginner upload, cloud setup, first prompt, everyday workflow |
 | `VALIDATION.md` | Verification coverage and limitations |
 | `tests/qa.cjs` | Portable automated regression/rendering harness |
+| `tests/balance.cjs` | Seeded ordinary-health bot and stationary-ship comparisons |
 | `package.json` | Dev-only test setup |
 | `history/snapshots/` | Six genuine earlier HTML files, not active entry points |
 
@@ -58,6 +60,7 @@ Use Node 22.22.2+ on the 22.x line, Node 24.15.0+ on the 24.x line, or Node 26+.
 ```sh
 npm install
 npm test
+npm run balance
 ```
 
 The game has no npm runtime dependencies. The test tools `jsdom` and `@napi-rs/canvas` are development-only. `npm install` produces a lockfile; commit that lockfile, then use `npm ci` on later clean environments. Tests generate PNGs under `tests/artifacts/`, excluded from Git.

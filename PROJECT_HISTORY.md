@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.3.5.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.4.0.
 
 ## Original brief
 
@@ -45,7 +45,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.2 | Fixed surplus XP being truncated when the final upgrade was chosen in either world, and in the completed-tree guard. All banked XP now remains available for subsequent levels. |
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
-| **v2.3.5 — current** | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
+| v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
+| **v2.4.0 — current** | Larger formations from levels 9/25, stronger level-based enemies, smaller escort XP cores, scarcer late repairs, and selective damage/cannon/knockback/defense/healing tuning. Lifeweaver limits rapid kill healing. Added repeatable ordinary-health balance simulations. |
 
 ## Current XP curve
 
@@ -105,3 +106,16 @@ Reviewed the active single-file game and ran the existing suite before editing. 
 - Touch, mouse, and bot instructions stay synchronized, including touch guidance on the start screen. Narrow-screen hull labels and health values are readable without splitting the health fraction across lines.
 
 Version/changelog, project instructions, package metadata, and documentation are synchronized at v2.3.5. The original offline architecture, XP curve, one-time trees, corner patrol, shared background clock, World 1's exact 20-warden finale, distinct World 2, restrained stars, and centered planet remain in place. Validation evidence is recorded in `VALIDATION.md`.
+
+## v2.4.0 combat balance — October 3, 2026
+
+The owner reported that levels were too easy and upgrades could overpower the battlefield. Chose larger mixed formations and selective upgrade tuning, with ordinary-health comparisons to protect playable progression.
+
+- Regular arrivals have one primary enemy through level 8, one escort from level 9, and two escorts from level 25. Escorts use each world's existing enemy roster, arrive safely offscreen, respect entity caps, and carry 35% of their normal XP rounded to at least one. Chloris retains its dusk swarm. Final-round arrivals bypass escort spawning: exactly 20 final wardens, or three Dreadblooms followed by the Heart.
+- World 1 enemy hull gains a 1% multiplier per earned level after level 1, alongside the existing elapsed-time and invasion scaling. World 2's level contribution rises from 1.8% to 2.5% per level. Starting enemy stats remain the same.
+- World 1 Antimatter Reactor changes from +250% to +150% projectile damage; Broadside Array adds two cannons for three shots; Repulsor Battery adds 40 knockback instead of 75; Nanite Foundry restores 2.5 hull/second instead of 4.5; Sentinel Array clears one nearby dart every 0.45 seconds instead of 0.16. The autocannon's effect is unchanged; its description now correctly describes the reduced interval between shots.
+- World 2 Lifeweaver restores one hull per ordinary kill, at most twice per second, with 25-hull boss recovery retained. Evergreen Heart adds 1.5 hull/second instead of 2.5 and keeps its XP bonus. Pollen Accelerator's unchanged effect is described as a shorter firing interval. Threefold Bloom still earns a three-shot volley from one starting bolt.
+- Normal repair-drop probability remains 8.5% below level 9, then becomes 4% divided by formation size. Repair amounts, guaranteed boss repairs, salvage/pollen gifts, and damage protection remain available. Larger packs consequently supply combat pressure without proportionally multiplying free healing.
+- Added `npm run balance`, a development-only seeded simulation using ordinary health, normal upgrade selection and protected resumes. In the selected sample, stationary complete builds changed from six survivors out of six to one out of six over three minutes; all six moving complete builds survived. Normal bot runs remained viable into late levels. See `VALIDATION.md` for the method and limits.
+
+Visible version/changelog, manuals, README, package metadata, and current-version references are synchronized at v2.4.0. No runtime dependencies or additional upgrade trees were introduced.

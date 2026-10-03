@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.3.5**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, and control/progress improvements.
+Current game: **v2.4.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, and v2.4.0 combat balance.
 
 ## How to run the portable suite
 
@@ -100,3 +100,15 @@ Complete v2.3.4 HTML SHA-256: `b886013290933e344c7ffcd2a28a41437850eb75989d45b26
 - Browser build/upgrade/transition fixtures use private hooks injected into browser memory only; the delivered HTML contains no test hooks. These UI checks complement the simulated campaign checks rather than establishing long-run survival balance. Physical touch, audible audio output, actual browser/OS background throttling, and the owner's ChatGPT preview integration still need device checks.
 
 Complete v2.3.5 HTML SHA-256: `6bed6a25d4856e5ac6b214df043b308c3ae85eace65f553e21f7a4533c192946`.
+
+## v2.4.0 verification — October 3, 2026
+
+- The existing v2.3.5 suite passed before edits on supported Node v24.19.0. Used existing pinned dev dependencies; no additional packages were installed.
+- Added regression coverage for regular formation sizes at levels 1/8/9/24/25/40 in both worlds, every escort's safe offscreen arrival, level-driven hull scaling at fixed elapsed time, enemy caps with packs, the actual three-shot Broadside volley, smaller escort XP, and Lifeweaver burst limits/recovery/boss healing. Existing exact-finale tests verify that packs do not add enemies to either final siege.
+- Final v2.4.0 `npm test` passed with no DOM/runtime errors. The 240/120/180-second stress simulations, entity/effect caps, XP surplus and XP-only progression, unique trees, editor focus, native button activation, restart/reset, bot patrol and warning-circle escapes, shared background clock, World 1's exact 20 final wardens, World 2 entry/one starting bolt and final victory all passed. `git diff --check` passed.
+- Added the repeatable `tests/balance.cjs` runner (`npm run balance`). It uses the QA harness's DOM/Canvas setup and private hooks in memory. Seeds 17/83/211 exercise both worlds in three modes: normal bot progression for 600 seconds of update steps, complete-build moving bot for 180 seconds, and complete-build stationary aiming for 180 seconds. Complete-build cases start at level 30 and 180 elapsed seconds, hold that level for a controlled comparison, and use ordinary health/invulnerability and real damage. Normal runs retain upgrade pause/resume protection; their game clock can be shorter than the step budget. 'damage' in the output sums observed per-step hull losses, rather than counting every hit before simultaneous healing.
+- Compared the saved v2.3.5 source with the final implementation: all six stationary complete builds survived the old three-minute sample; only one survived the revised sample. All six moving complete builds survived both samples. Revised normal runs survived into levels 47/47/47 in World 1 and 50/49/49 in World 2. Moving complete-build mean enemy counts rose from 12.4 to 50.0 in World 1 and 5.9 to 17.9 in World 2. This supports increased pressure and a meaningful cost for failing to move, with viable strong builds.
+- An initial pack-only pass was rejected after the comparisons showed extra kills supplying enough XP/healing to keep parked ships safe. Smaller escort cores, adjusted repair frequency, slower point defense and limited Lifeweaver recovery were included in the final pass. Ignored comparison output lives in `tests/artifacts/balance-before.json` and `balance-after.json`; run the harness against an earlier HTML path to repeat the comparison.
+- Inspected generated portrait Canvas images for the denser World 1/World 2 combat. Hostile shots remain more prominent than decorative stars, and drawing/background placement code is unchanged. This release was checked through simulation and Canvas rendering; the v2.3.5 real-browser UI checks are recorded above. Real Android feel/performance, human difficulty, audio, and actual tab suspension require device play. Three seeds per world are illustrative balance evidence, not a guarantee of survival or a population win-rate estimate.
+
+Complete v2.4.0 HTML SHA-256: `dc2238272a4410a69090dcf2db005bac47dc6656dac8b4b195ba7f7382ec89d8`.
