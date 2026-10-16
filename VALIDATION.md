@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.4.2**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.5.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -140,3 +140,13 @@ Complete v2.4.1 HTML SHA-256: `7ed1defc44343011fa11e93ea3bee9be3cfe02f5177e92960
 - Checked inline JavaScript syntax, package/lock agreement, and current release descriptions. No runtime dependencies, external assets, gameplay balance changes, or snapshot edits. Audio APIs remain mocked for automated checks; audible output and actual browser/device behavior retain the limits recorded for v2.4.1.
 
 Complete v2.4.2 HTML SHA-256: `9672e538162b8d45b06ecc4de8299ba775ab3707cb4c5f709f00e83e1a960172`.
+
+## v2.5.0 adaptive soundtrack verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with existing locked dependencies. Gameplay regressions and all 240/120/180-second stress cases reported no DOM/runtime errors. No additional dependencies were needed.
+- Deterministic Web Audio checks exercised all five space arrangements and all four Chloris seasonal arrangements through the actual scheduler. They verify scene adoption within a bar, continuous step position on region changes, increased musical pressure at late levels and ordinary bosses, the 148-BPM Warden finale, Crown Siege, and escalating Heart phases. Thirty seconds of audio scheduling leaves campaign level, hull, score, and world time unchanged.
+- All arrangements respect the 32-voice cap. Existing ten-minute scheduling and delayed-clock tests passed, as did pause/restart cleanup, independent effects/music controls, all four saved channel combinations, input isolation, volume persistence, and world changes.
+- Inline JavaScript and music-test syntax checks passed; release/package/lock versions, documentation links, and whitespace were checked. Historical snapshots and gameplay balance code remain unchanged.
+- Audio tests use a mocked Web Audio clock. These results establish arrangement selection and scheduling behavior, not an audible quality review. No browser binary was available; actual device playback, mix preferences, and browser/OS background suspension remain listening/device checks. No real-browser validation is claimed for this release.
+
+Complete v2.5.0 HTML SHA-256: `c9f841eff716c90633aad2df8fecafc9080e5d21669a3aaaaf4a2c27ec27ab12`.

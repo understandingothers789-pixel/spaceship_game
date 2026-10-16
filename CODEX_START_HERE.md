@@ -1,6 +1,6 @@
 # Continue Void Wake with GitHub and Codex — beginner guide
 
-Originally prepared October 2, 2026; updated October 16, 2026 for v2.4.2. Start on your Windows PC: extracting a ZIP and uploading folders is easier there than on a phone.
+Originally prepared October 2, 2026; updated October 16, 2026 for v2.5.0. Start on your Windows PC: extracting a ZIP and uploading folders is easier there than on a phone.
 
 GitHub holds your project files and their saved versions. Codex Cloud works on a copy of that repository and can propose code changes. You do not need GitHub Copilot or GitHub Codespaces for this workflow. You can still play the downloaded HTML offline.
 
@@ -12,7 +12,7 @@ The campaign currently includes World 1 and Chloris. The project is designed to 
 
 ## 1. Extract the project (only for an initial import)
 
-For a separate initial import, download the current repository using **Code → Download ZIP**. In Windows File Explorer, right-click the ZIP, choose **Extract All**, and open the extracted `spaceship_game-main` folder. Open `game.html` to confirm that v2.4.2 runs.
+For a separate initial import, download the current repository using **Code → Download ZIP**. In Windows File Explorer, right-click the ZIP, choose **Extract All**, and open the extracted `spaceship_game-main` folder. Open `game.html` to confirm that v2.5.0 runs.
 
 The repository includes the complete game, six real earlier snapshots, relevant history, instructions for Codex, portable regression tests, and a seeded balance runner. `game.html` is already the final playable file; you do not need to compile it.
 
@@ -32,9 +32,9 @@ On an empty repository, use **uploading an existing file**. On an initialized re
 
 Drag the CONTENTS of the extracted project folder into the upload area, including its `tests` and `history` folders. Do not upload just the ZIP or put an extra wrapper folder around everything in the repository. Include `.gitignore` and `package-lock.json`.
 
-Enter a message such as `Import Void Wake v2.4.2 and Codex handoff`, then save using **Commit changes** or **Propose changes**, whichever GitHub presents. If GitHub creates a branch/pull request for this initial upload, merge it before selecting the repo in Codex.
+Enter a message such as `Import Void Wake v2.5.0 and Codex handoff`, then save using **Commit changes** or **Propose changes**, whichever GitHub presents. If GitHub creates a branch/pull request for this initial upload, merge it before selecting the repo in Codex.
 
-Check the repository's top level: `game.html`, `AGENTS.md`, `README.md`, `PROJECT_HISTORY.md`, `CODEX_START_HERE.md`, `VALIDATION.md`, `package.json`, `package-lock.json`, `tests/`, and `history/` should be directly visible. Open `game.html` on GitHub and search for `v2.4.2`. That confirms you uploaded the current file.
+Check the repository's top level: `game.html`, `AGENTS.md`, `README.md`, `PROJECT_HISTORY.md`, `CODEX_START_HERE.md`, `VALIDATION.md`, `package.json`, `package-lock.json`, `tests/`, and `history/` should be directly visible. Open `game.html` on GitHub and search for `v2.5.0`. That confirms you uploaded the current file.
 
 The first commit contains the current source and archived files; earlier chat edits do not automatically become individual Git commits. The written history preserves the relevant decisions.
 
@@ -68,7 +68,7 @@ If `spaceship_game` is missing, check that you connected the GitHub account that
 Continue this existing Void Wake project; do not rebuild it from scratch.
 
 Read AGENTS.md, README.md, PROJECT_HISTORY.md, and VALIDATION.md.
-The active game is root game.html, currently v2.4.2. Older files in
+The active game is root game.html, currently v2.5.0. Older files in
 history/snapshots are reference snapshots only.
 
 First inspect the current game and run the existing tests. Install only

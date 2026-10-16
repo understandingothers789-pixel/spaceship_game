@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.4.2.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.5.0.
 
 ## Original brief
 
@@ -46,7 +46,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 | v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
-| **v2.4.2 — current** | Independent sound-effects and music toggles; M controls effects only. |
+| **v2.5.0 — current** | Adaptive region/season arrangements, level and boss intensity, dedicated finale motifs, and musical bar-line transitions. |
+| v2.4.2 | Independent sound-effects and music toggles; M controls effects only. |
 | v2.4.1 | Original quiet procedural soundtrack, world-specific harmonies, independent music controls, persisted preferences, and bounded audio-clock scheduling. |
 | v2.4.0 | Larger formations from levels 9/25, stronger level-based enemies, smaller escort XP cores, scarcer late repairs, and selective damage/cannon/knockback/defense/healing tuning. Lifeweaver limits rapid kill healing. Added repeatable ordinary-health balance simulations. |
 
@@ -142,3 +143,13 @@ Visible version/changelog, README, package version metadata, and current-version
 - At the owner's request, sound effects and music are independently switchable in both directions. The HUD button is labeled SFX; it and M now toggle effects only. Start and pause screens expose both SFX and MUSIC switches alongside the existing music-volume slider.
 - Music can initialize and continue while effects are muted. Muting music leaves effects available, and both can be off. Existing separate saved preferences are retained; no setting is forcibly enabled on update.
 - Extended music regressions to cover all four channel combinations, synchronized switches, click/keyboard actions, saved effects preference, and uninterrupted music scheduling when toggling effects. No balance or progression changes.
+
+## v2.5.0 adaptive game score — October 16, 2026
+
+Reworked the soundtrack to suit the current environment and encounter instead of repeating one quiet loop per world.
+
+- World 1 has five original arrangements: Frontier Drift (92 BPM, spacious exploration), Belt Runner (106 BPM, rhythmic travel), Solar Engines (118 BPM, driving synths), Rift Signals (100 BPM, darker sparse harmony), and Warden Approach (126 BPM, urgent pulses). Later level tiers and ordinary boss encounters add musical pressure. The final 20-warden battle switches to Twenty Against the Void at 148 BPM with a dedicated motif.
+- Chloris follows its actual seasons: Living Dawn, Rootstorm Dance, Firefly Pursuit, and Pollen Tides. Bell-like upper notes contrast with the space synths. Level tiers add movement and percussion; the Crown Siege has its own battle motif. The Heart cue escalates through 134, 140, and 146 BPM as its three health phases progress.
+- Sustained chords, melodic motifs, pulsing bass, synthesized kicks, and filtered noise percussion are generated inline. Eight-bar phrases include rests and variation. Musical changes enter at the next bar line with smoothed filter changes; the scheduler does not restart the score on every level or enemy change.
+- Retained the quiet volume setting, separate music/effects switches, saved preferences, upgrade ducking, pause/menu/game-over release, one shared background clock, and a 32-voice music cap. Music reads campaign state without modifying or advancing it. No external assets, packages, or gameplay balance changes.
+- Expanded deterministic audio regressions across every region and season, level pressure, ordinary bosses, both finales, Heart phases, bar-line transitions, note bounds, and gameplay isolation. Evidence and limits are in `VALIDATION.md`.

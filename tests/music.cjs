@@ -8,7 +8,7 @@ class Node{constructor(){this.gain=new Param();this.frequency=new Param();this.p
 class Source extends Node{constructor(context){super();this.context=context;context.sources.push(this);this.stopAt=Infinity;}start(time=0){if(time<this.context.currentTime-1e-8)throw Error('scheduled in the past');this.startAt=time;}stop(time){this.stopAt=time;}}
 class FakeAudioContext{constructor(){this.currentTime=0;this.sampleRate=22050;this.state='running';this.destination=new Node();this.sources=[];contexts.push(this);}createGain(){return new Node();}createBiquadFilter(){return new Node();}createStereoPanner(){return new Node();}createOscillator(){return new Source(this);}createBufferSource(){return new Source(this);}createBuffer(channels,length){return{getChannelData:()=>new Float32Array(length)};}resume(){this.state='running';return Promise.resolve();}advance(seconds){this.currentTime+=seconds;for(const source of this.sources)if(!source.ended&&source.stopAt<=this.currentTime){source.ended=true;source.onended?.();}}}
 let header=fs.readFileSync(path.join(__dirname,'qa.cjs'),'utf8').split("assert(t,'test hooks loaded')")[0];
-header=header.replace('window.test={','window.test={updateMusic,stopMusic,toggleMusic,toggleSound,get effectsGain(){return master},get effectsEnabled(){return sound},get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
+header=header.replace('window.test={','window.test={musicArrangement,get musicScene(){return musicScene},updateMusic,stopMusic,toggleMusic,toggleSound,get effectsGain(){return master},get effectsEnabled(){return sound},get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
 header=header.replace('beforeParse(w){','beforeParse(w){w.AudioContext=FakeAudioContext;');
 const checks=`
 assert.equal(contexts.length,0,'loading a page does not autoplay or create an audio context');
@@ -40,6 +40,22 @@ t.g.p.xp=t.g.p.need;t.openUpgrade();assert.equal(t.state,'upgrade');assert.equal
 t.completeWorld1();audio.advance(.2);t.enterWorld2();t.updateMusic();assert.equal(t.musicWorld,2,'Chloris switches music');
 const gardenNotes=[...t.musicVoices].filter(v=>!v.stopped).map(v=>v.osc.frequency.value);assert.notDeepEqual(gardenNotes,firstNotes,'worlds use different harmonies');
 for(let i=0;i<12;i++){t.startRun(true,i%2+1);audio.advance(.3);t.updateMusic();assert(t.musicVoices.size<=32);}assert.equal(contexts.length,1,'restart reuses one audio graph');
+
+// Exercise adaptive arrangements through the real scheduler in both campaigns.
+const pump=seconds=>{for(let i=0;i<Math.ceil(seconds*10);i++){audio.advance(.1);t.updateMusic();assert(t.musicVoices.size<=32,'every arrangement respects the music voice budget');}};
+t.startRun(true,1);pump(1);
+const spaceNames=[];for(const level of [1,11,21,31,41]){t.g.p.level=level;const arrangement=t.musicArrangement();spaceNames.push(arrangement.name);assert(arrangement.bpm>=80&&arrangement.bpm<=160);assert(arrangement.chords.every(c=>c.length===4&&c.every(Number.isFinite)));pump(7);assert.equal(t.musicScene.key,arrangement.key,'region arrangement enters within a bar');assert([...t.musicVoices].some(v=>!v.stopped),'each region keeps producing notes');}
+assert.equal(new Set(spaceNames).size,5,'five distinct space arrangements');
+t.g.p.level=1;pump(7);while(t.musicStep%16===0)pump(.1);const continuous=t.musicStep,oldKey=t.musicScene.key;t.g.p.level=11;t.updateMusic();assert.equal(t.musicStep,continuous,'level change never restarts the sequence');assert.equal(t.musicScene.key,oldKey,'new region waits for the next bar');pump(7);assert.equal(t.musicScene.name,'Belt Runner');
+t.g.enemies=[{type:'warden',hp:100,maxHp:100}];const encounter=t.musicArrangement();assert(encounter.drive>1&&encounter.bpm>106,'boss raises intensity');pump(7);assert.equal(t.musicScene.key,encounter.key);
+t.g.p.level=50;t.g.finalRound={clearing:false};pump(7);assert.equal(t.musicScene.name,'Twenty Against the Void');assert.equal(t.musicScene.bpm,148);
+t.startRun(true,2);const gardenNames=[];for(let season=0;season<4;season++){t.g.season=season;gardenNames.push(t.musicArrangement().name);pump(7);assert.equal(t.musicScene.name,gardenNames[season]);}assert.equal(new Set(gardenNames).size,4,'four distinct garden-season arrangements');
+t.g.season=0;t.g.p.level=1;const early=t.musicArrangement();t.g.p.level=45;const late=t.musicArrangement();assert(late.drive>early.drive&&late.bpm>early.bpm,'garden levels increase musical pressure');
+t.g.p.level=50;t.g.finalRound={clearing:false};pump(7);assert.equal(t.musicScene.name,'Crown Siege');
+const phaseTempos=[];for(const hp of [100,50,20]){t.g.enemies=[{type:'heart',hp,maxHp:100}];pump(7);assert.equal(t.musicScene.name,'Heart of Chloris');phaseTempos.push(t.musicScene.bpm);}assert(phaseTempos[0]<phaseTempos[1]&&phaseTempos[1]<phaseTempos[2],'Heart phases escalate the battle cue');
+const snapshot=JSON.stringify({level:t.g.p.level,hp:t.g.p.hp,score:t.g.score,worldTime:t.g.worldTime});pump(30);assert.equal(JSON.stringify({level:t.g.p.level,hp:t.g.p.hp,score:t.g.score,worldTime:t.g.worldTime}),snapshot,'music scheduling cannot advance or alter gameplay');
+console.log('Adaptive music passed: all regions/seasons, late-level pressure, boss/finale/Heart cues, bar-line changes, bounded voices, gameplay isolation.');
+
 t.gameOver();audio.advance(.2);assert.equal(t.musicVoices.size,0,'game over releases the score');t.mainMenu();assert.equal(t.musicWorld,0);
 audio.state='suspended';t.startRun();assert.equal(contexts.length,1);audio.state='running';t.updateMusic();
 Object.defineProperty(w,'localStorage',{get(){throw new Error('blocked storage');}});t.toggleMusic();t.toggleMusic();
