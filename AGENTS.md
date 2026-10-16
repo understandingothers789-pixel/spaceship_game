@@ -23,7 +23,9 @@ The owner wants an attractive, visible space scene: teal/violet nebulae, a layer
 
 - Inspect existing functions before rewriting. Keep the single-file architecture unless the owner changes that requirement.
 - `xpNeeded`, `openUpgrade`, `chooseUpgrade`, `startRun`, `configureWorld2`, `thinkBot`, `spawnWave`, `update`, `advanceSimulation`, `paintSpaceBackground`, `paintGardenBackground`, and `render` are useful entry points.
-- Playing needs no Node or npm. Automated validation uses `npm install` once, then `npm test`; Node must satisfy `package.json`'s engine range. These are development dependencies only.
+- Playing needs no Node or npm. The committed lockfile supports `npm ci` in clean environments, then `npm test`; Node must satisfy `package.json`'s engine range. These are development dependencies only.
+- Keep descriptions in `README.md`, `CODEX_START_HERE.md`, and `package.json` aligned with current behavior and delivery instructions. Describe the project as an expanding universe of worlds; list currently implemented worlds without treating that number as a permanent limit. Preserve historical release evidence as historical evidence.
+- `qa.cjs` is a compatibility entry point for `tests/qa.cjs`; maintain a single regression harness. `npm run balance` runs `tests/balance.cjs` and prints seeded ordinary-health comparisons, not pass/fail assertions.
 - `tests/qa.cjs` injects private test hooks into the inline IIFE in memory. Do not ship hooks in `game.html`. If names or the IIFE terminator change, update the harness appropriately rather than weakening assertions.
 - Run checks appropriate to the edit. For gameplay changes, run the full suite. For purely visual edits, also render and inspect relevant PNGs under `tests/artifacts/`; a browser check is preferable when available. The suite uses JSDOM/native Canvas, not a real browser. See `VALIDATION.md` for limits.
 - Respect entity caps and keep expensive background generation out of the per-frame loop. Do not remove caps to make a test pass.

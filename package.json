@@ -2,7 +2,7 @@
   "name": "void-wake",
   "version": "2.4.0",
   "private": true,
-  "description": "A complete offline two-world spaceship survival game in one HTML file.",
+  "description": "A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot.",
   "scripts": {
     "test": "node tests/qa.cjs",
     "balance": "node tests/balance.cjs"

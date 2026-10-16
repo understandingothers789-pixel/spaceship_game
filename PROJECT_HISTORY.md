@@ -92,7 +92,7 @@ The owner asked Codex to merge completed, checked changes into `main` by default
 ## Handoff boundaries
 
 - No full-run save/continue or replay system exists in this particular branch. High score, sound, and the World 2 unlock are persisted.
-- The game has not been published to GitHub as part of preparing this package. Uploading these files creates the initial GitHub history; Codex can continue from there.
+- The original handoff was prepared before upload. The project now lives at https://github.com/understandingothers789-pixel/spaceship_game, with subsequent releases recorded in Git commits. A source repository is separate from hosting the game as a playable website.
 - The owner's ongoing priorities are fun, variety, readable visuals, reasonably paced upgrades, and complete downloadable code. Keep the visible version tag and short changelog.
 
 ## v2.3.5 product review — October 3, 2026
@@ -118,4 +118,12 @@ The owner reported that levels were too easy and upgrades could overpower the ba
 - Normal repair-drop probability remains 8.5% below level 9, then becomes 4% divided by formation size. Repair amounts, guaranteed boss repairs, salvage/pollen gifts, and damage protection remain available. Larger packs consequently supply combat pressure without proportionally multiplying free healing.
 - Added `npm run balance`, a development-only seeded simulation using ordinary health, normal upgrade selection and protected resumes. In the selected sample, stationary complete builds changed from six survivors out of six to one out of six over three minutes; all six moving complete builds survived. Normal bot runs remained viable into late levels. See `VALIDATION.md` for the method and limits.
 
-Visible version/changelog, manuals, README, package metadata, and current-version references are synchronized at v2.4.0. No runtime dependencies or additional upgrade trees were introduced.
+Visible version/changelog, README, package version metadata, and current-version references in the project instructions were updated to v2.4.0. The beginner guide and several supporting descriptions still required the later documentation refresh recorded below. No runtime dependencies or additional upgrade trees were introduced.
+
+## Supporting-file refresh — October 16, 2026
+
+- Synchronized the beginner guide with the existing `spaceship_game` repository, current v2.4.0 baseline, committed lockfile, balance command, and default delivery to `main` after checks.
+- Matched README and package descriptions to the expanding-world direction. Clarified that XP levels continue after all one-time upgrades are acquired, described current touch controls, and distinguished regression assertions from observational balance output.
+- Replaced the stale root `qa.cjs` copy with a compatibility entry point forwarding to the maintained `tests/qa.cjs`. Documented supporting-file responsibilities in the README and project instructions.
+- Corrected the old pre-upload handoff boundary and the v2.4.0 claim about synchronized manuals. Historical release evidence remains intact.
+- No gameplay or HTML edits; the game version remains v2.4.0. Checks for this refresh are recorded in `VALIDATION.md`.
