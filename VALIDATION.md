@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.6.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.7.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -160,3 +160,12 @@ Complete v2.5.0 HTML SHA-256: `c9f841eff716c90633aad2df8fecafc9080e5d21669a3aaaa
 - Audio APIs are simulated for these checks; convolution output, audible mix quality, and real device playback were not auditioned. No browser binary was available in this workspace. Listening on the owner's browser remains the check for subjective orchestral character and the desired music/effects balance.
 
 Complete v2.6.0 HTML SHA-256: `423a142e023583b5c3ed391842b48cb4c3c6610e5040a5669c22e31fa3326eb5`.
+
+
+## v2.7.0 visible SFX/music balance verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with the existing locked dependencies. Gameplay QA passed its 240/120/180-second runs with no DOM/runtime errors; the adaptive soundtrack and all previous control, campaign, stress, and persistence checks passed.
+- New audio/UI regressions confirm that the explicit Audio Mix range is present near the top of both start and pause panels, its exact SFX/music split updates in sync, both extreme mixes correctly silence one channel while emphasizing the other, the midpoint preserves the existing gains, and the chosen ratio restores from local storage. Existing independent volume controls and mute toggles remain covered.
+- Inline JavaScript and test syntax passed. No external assets, runtime dependencies, gameplay changes, or archived snapshot edits. The JSDOM harness checks UI markup and audio routing but does not measure real browser layout or audition audio. A browser binary was unavailable; on-device visibility and listening remain practical checks.
+
+Complete v2.7.0 HTML SHA-256: `c1c60c620505303bc1e93942384f95f0e6c95ccdfa23a83201357bca0d1a85f8`.

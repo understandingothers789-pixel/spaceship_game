@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.6.0.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.7.0.
 
 ## Original brief
 
@@ -46,7 +46,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 | v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
-| **v2.6.0 — current** | Cinematic synthesized orchestration, anthemic lead lines, war drums and hall ambience; separate saved SFX/music volume sliders. |
+| **v2.7.0 — current** | A visible SFX/music balance slider on start and pause screens, alongside independent channel levels and mute switches. |
+| v2.6.0 | Cinematic synthesized orchestration, anthemic lead lines, war drums and hall ambience; separate saved SFX/music volume sliders. |
 | v2.5.0 | Adaptive region/season arrangements, level and boss intensity, dedicated finale motifs, and musical bar-line transitions. |
 | v2.4.2 | Independent sound-effects and music toggles; M controls effects only. |
 | v2.4.1 | Original quiet procedural soundtrack, world-specific harmonies, independent music controls, persisted preferences, and bounded audio-clock scheduling. |
@@ -164,3 +165,8 @@ The owner requested a more epic score and a way to change the balance between ef
 - Preserved all adaptive region/season/level/boss/finale cues, quiet default music, independent switches, upgrade ducking, the existing audio clock, and the 32-voice cap. The final music-output gate fades reverb along with notes when pausing or muting.
 - Start and pause screens now have separate SFX and music sliders, both 0–100%, with synchronized percentage readouts and persisted preferences. SFX defaults to the existing effects gain at 100%; music stays at 22%. Muting and unmuting restores each chosen level. Adjusting one slider never changes the other. SFX at zero avoids creating inaudible effects voices.
 - Extended audio regressions to cover harmonic-wave use, stereo room creation/gating/reuse, independent gain changes, custom-mix persistence, full music-volume range, zero-level effects, and all prior channel/scheduling/campaign checks. No gameplay balance changes or runtime packages.
+
+
+## v2.7.0 visible SFX/music balance — October 16, 2026
+
+The owner could not find the balance controls because the independent volume sliders were near the bottom of long start and pause panels. Added a clearly labeled **AUDIO MIX** slider directly beneath each panel heading and opening text. Its readout shows the exact SFX/music shares and updates both screens together. The endpoints provide SFX-heavy and music-heavy mixes; the center preserves the original channel gains. The independent channel volume sliders and mute switches remain below for fine tuning. The selected balance persists in local storage.
