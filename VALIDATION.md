@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.7.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.8.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -169,3 +169,12 @@ Complete v2.6.0 HTML SHA-256: `423a142e023583b5c3ed391842b48cb4c3c6610e5040a5669
 - Inline JavaScript and test syntax passed. No external assets, runtime dependencies, gameplay changes, or archived snapshot edits. The JSDOM harness checks UI markup and audio routing but does not measure real browser layout or audition audio. A browser binary was unavailable; on-device visibility and listening remain practical checks.
 
 Complete v2.7.0 HTML SHA-256: `c1c60c620505303bc1e93942384f95f0e6c95ccdfa23a83201357bca0d1a85f8`.
+
+
+## v2.8.0 shared overall audio volume verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with the locked dependencies. Gameplay stress simulations (240/120/180 seconds) and the complete adaptive score regression passed without DOM/runtime errors.
+- Audio graph assertions confirm that SFX and the complete music/reverb output feed one shared final gain node. The single Overall Volume slider synchronizes between start and pause panels, persists, reaches silence cleanly, and does not alter the balance slider. The SFX/music balance endpoints, independent channel mutes, keyboard input isolation, music cleanup, restart reuse, and legacy Music volume preference migration are covered.
+- Inline JavaScript and test syntax passed. No new packages or external assets. JSDOM checks the rendered markup and mocked Web Audio routing, not physical-browser layout or audible output; no browser binary was available.
+
+Complete v2.8.0 HTML SHA-256: `0356716c5772529ff1dae114b7505dd610e56aac64f3f20afbbe632df08f095f`.
