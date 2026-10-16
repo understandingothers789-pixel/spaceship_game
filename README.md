@@ -1,6 +1,6 @@
 # Void Wake
 
-A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.4.0**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
+A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.4.1**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -30,12 +30,13 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
 - World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
 - The bot moves, aims, collects XP, selects upgrades, and enters World 2. It follows a corner-oriented patrol and changes target quadrants every 4.2 seconds.
+- Original procedural music: quiet drifting synths for space and a bell-like Chloris score. Start/pause screens offer a music toggle and volume slider (22% by default). M mutes all audio; music preferences persist locally. No downloaded tracks or audio files are used.
 - Health, damage invulnerability, safe spawns, particles, effects, procedural sound, pause, restart, and a stored high score.
 - Worker/interval background simulation continues when the tab loses focus, subject to browser throttling or suspension.
 - Bot upgrades and automatic transitions preserve typing focus; game shortcuts ignore active text editors.
 - Stars are smaller and dimmer than hostile shots; the blue planet is horizontally centered at the top.
 
-High score, sound preference, and World 2 unlock are stored in browser `localStorage`. This branch does **not** contain a full-run save/continue system. Storage is browser/profile/origin-specific; moving from a local file to a hosted URL does not migrate those values automatically.
+High score, sound/music preferences, music volume, and World 2 unlock are stored in browser `localStorage`. This branch does **not** contain a full-run save/continue system. Storage is browser/profile/origin-specific; moving from a local file to a hosted URL does not migrate those values automatically.
 
 ## Files
 
@@ -47,6 +48,7 @@ High score, sound preference, and World 2 unlock are stored in browser `localSto
 | `CODEX_START_HERE.md` | Beginner guide for the existing repository, checks, and everyday Codex workflow |
 | `VALIDATION.md` | Verification coverage and limitations |
 | `tests/qa.cjs` | Portable automated regression/rendering harness |
+| `tests/music.cjs` | Deterministic Web Audio clock and music/UI regressions |
 | `tests/balance.cjs` | Seeded ordinary-health bot and stationary-ship comparisons |
 | `qa.cjs` | Compatibility entry point forwarding to `tests/qa.cjs` |
 | `package.json` / `package-lock.json` | Dev-only commands and locked test dependencies |

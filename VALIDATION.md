@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.4.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, and v2.4.0 combat balance.
+Current game: **v2.4.1**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -12,7 +12,7 @@ npm test
 npm run balance
 ```
 
-The lockfile is committed; use `npm ci` in fresh environments. `npm test` runs the regression/rendering harness, while `npm run balance` prints ordinary-health seeded simulation results for interpretation rather than enforcing a pass/fail threshold. Installation needs package-registry access; playing the HTML needs no network or packages.
+The lockfile is committed; use `npm ci` in fresh environments. `npm test` runs the regression/rendering harness and deterministic music checks, while `npm run balance` prints ordinary-health seeded simulation results for interpretation rather than enforcing a pass/fail threshold. Installation needs package-registry access; playing the HTML needs no network or packages.
 
 `tests/qa.cjs` uses JSDOM for DOM/events and native Canvas for rendering. It injects private hooks into the inline IIFE in memory; the distributed HTML has no test hooks. The original migration replaced absolute dependency paths with package imports, resolved the project root relative to the test file, and moved generated PNGs under `tests/artifacts/`. Later releases expanded that harness. Root `qa.cjs` now forwards to the maintained `tests/qa.cjs` so older commands use the same assertions.
 
@@ -122,3 +122,13 @@ Complete v2.4.0 HTML SHA-256: `dc2238272a4410a69090dcf2db005bac47dc6656dac8b4b19
 - Checked package/lock version and dependency agreement, current-version references, local Markdown links, supporting-file whitespace, and the root compatibility entry point. `node --check qa.cjs` passed. The maintained regression and balance harnesses were unchanged.
 - Rechecked the cloud-environment creation/publishing instructions against the official OpenAI documentation. No new real-browser gameplay check was needed for this supporting-file refresh.
 - The game remains v2.4.0 and is byte-for-byte unchanged: SHA-256 `dc2238272a4410a69090dcf2db005bac47dc6656dac8b4b195ba7f7382ec89d8`. Archived snapshots were not modified.
+
+## v2.4.1 music verification — October 16, 2026
+
+- `npm test` passed on supported Node v24.19.0 with the existing locked dev dependencies. The command now runs both `tests/qa.cjs` and `tests/music.cjs`. No packages or runtime dependencies were added.
+- The full gameplay regression/rendering harness reported no DOM/runtime errors. Existing XP, one-time upgrades, focus/input isolation, bot movement, hidden-tab clock, stress, world transition, finale, and restart checks passed.
+- New music checks execute the real inline soundtrack and control logic with a deterministic mocked Web Audio context. They verify no audio creation before Play, the 22% default, synchronized controls, saved preferences, slider keyboard isolation, zero-volume release, independent music toggle, master mute, pause cleanup, subdued upgrade playback, different world harmonies, context reuse across restarts, and game-over cleanup. A simulated ten-minute audio clock stays within the 32-voice limit; a two-minute scheduling delay produces no catch-up burst.
+- No browser binary was available in this workspace. These checks validate scheduling and UI logic, not audible playback, subjective mix quality, mobile touch layout, or actual browser autoplay/background-audio policy. Audio output begins after a user interaction and remains subject to browser/OS suspension.
+- Confirmed synchronized v2.4.1 release/package references, valid inline JavaScript, package/lock agreement, and no external runtime resources. Historical snapshots remain untouched. No combat balance changes were made.
+
+Complete v2.4.1 HTML SHA-256: `7ed1defc44343011fa11e93ea3bee9be3cfe02f5177e92960f8c86c6d77b0e7d`.
