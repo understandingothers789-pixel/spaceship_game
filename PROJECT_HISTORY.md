@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.4.1.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.4.2.
 
 ## Original brief
 
@@ -46,7 +46,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 | v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
-| **v2.4.1 — current** | Original quiet procedural soundtrack, world-specific harmonies, independent music controls, persisted preferences, and bounded audio-clock scheduling. |
+| **v2.4.2 — current** | Independent sound-effects and music toggles; M controls effects only. |
+| v2.4.1 | Original quiet procedural soundtrack, world-specific harmonies, independent music controls, persisted preferences, and bounded audio-clock scheduling. |
 | v2.4.0 | Larger formations from levels 9/25, stronger level-based enemies, smaller escort XP cores, scarcer late repairs, and selective damage/cannon/knockback/defense/healing tuning. Lifeweaver limits rapid kill healing. Added repeatable ordinary-health balance simulations. |
 
 ## Current XP curve
@@ -135,3 +136,9 @@ Visible version/changelog, README, package version metadata, and current-version
 - Music starts after Play or Watch Bot, at 22% of the dedicated quiet music-volume scale. Start and pause screens share a music toggle and a 0–60% volume slider. M and the HUD sound button mute all audio, while music can be disabled independently of effects. Preferences are stored locally.
 - Upgrade screens soften the score; explicit pause, game over, world-clear screens, and the main menu release music voices with short fades. Restarts reuse the audio graph and reset the score. A maximum of 32 music voices and bounded scheduling prevent accumulation or a burst of missed notes after a delayed tab wakeup. The existing shared simulation/background clock drives scheduling without a new timer.
 - Added deterministic music regressions for real inline audio/UI logic using a mocked Web Audio clock. The full regression command now runs both gameplay and music checks. No gameplay balance changes.
+
+## v2.4.2 independent audio switches — October 16, 2026
+
+- At the owner's request, sound effects and music are independently switchable in both directions. The HUD button is labeled SFX; it and M now toggle effects only. Start and pause screens expose both SFX and MUSIC switches alongside the existing music-volume slider.
+- Music can initialize and continue while effects are muted. Muting music leaves effects available, and both can be off. Existing separate saved preferences are retained; no setting is forcibly enabled on update.
+- Extended music regressions to cover all four channel combinations, synchronized switches, click/keyboard actions, saved effects preference, and uninterrupted music scheduling when toggling effects. No balance or progression changes.

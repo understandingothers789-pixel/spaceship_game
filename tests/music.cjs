@@ -8,7 +8,7 @@ class Node{constructor(){this.gain=new Param();this.frequency=new Param();this.p
 class Source extends Node{constructor(context){super();this.context=context;context.sources.push(this);this.stopAt=Infinity;}start(time=0){if(time<this.context.currentTime-1e-8)throw Error('scheduled in the past');this.startAt=time;}stop(time){this.stopAt=time;}}
 class FakeAudioContext{constructor(){this.currentTime=0;this.sampleRate=22050;this.state='running';this.destination=new Node();this.sources=[];contexts.push(this);}createGain(){return new Node();}createBiquadFilter(){return new Node();}createStereoPanner(){return new Node();}createOscillator(){return new Source(this);}createBufferSource(){return new Source(this);}createBuffer(channels,length){return{getChannelData:()=>new Float32Array(length)};}resume(){this.state='running';return Promise.resolve();}advance(seconds){this.currentTime+=seconds;for(const source of this.sources)if(!source.ended&&source.stopAt<=this.currentTime){source.ended=true;source.onended?.();}}}
 let header=fs.readFileSync(path.join(__dirname,'qa.cjs'),'utf8').split("assert(t,'test hooks loaded')")[0];
-header=header.replace('window.test={','window.test={updateMusic,stopMusic,toggleMusic,toggleSound,get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
+header=header.replace('window.test={','window.test={updateMusic,stopMusic,toggleMusic,toggleSound,get effectsGain(){return master},get effectsEnabled(){return sound},get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
 header=header.replace('beforeParse(w){','beforeParse(w){w.AudioContext=FakeAudioContext;');
 const checks=`
 assert.equal(contexts.length,0,'loading a page does not autoplay or create an audio context');
@@ -29,7 +29,13 @@ slider.focus();const x=t.g.p.x;key('keydown','ArrowRight');t.update(.016);assert
 slider.value='0';slider.dispatchEvent(new w.Event('input'));audio.advance(.2);assert.equal(t.musicVoices.size,0,'zero volume releases voices');
 slider.value='22';slider.dispatchEvent(new w.Event('input'));assert(t.musicVoices.size>0);
 t.toggleMusic();assert(!t.musicEnabled);assert.equal(w.localStorage.getItem('void-wake-music-v1'),'off');audio.advance(.2);assert.equal(t.musicVoices.size,0);t.toggleMusic();assert(t.musicEnabled);assert(t.musicVoices.size>0);
-t.toggleSound();audio.advance(.2);assert.equal(t.musicVoices.size,0,'M mutes the score too');t.toggleSound();assert(t.musicVoices.size>0);
+const musicPosition=t.musicStep;t.toggleSound();audio.advance(.2);t.updateMusic();assert(!t.effectsEnabled);assert.equal(t.effectsGain.gain.value,0);assert(t.musicVoices.size>0,'effects off leaves music playing');assert(t.musicStep>=musicPosition,'effects toggle does not restart music');
+for(const button of w.document.querySelectorAll('[data-effects-toggle]')){assert.equal(button.textContent,'SFX: OFF');assert.equal(button.getAttribute('aria-pressed'),'false');}
+assert.equal(w.localStorage.getItem('void-wake-sound-v1'),'off');
+t.toggleMusic();audio.advance(.2);assert.equal(t.musicVoices.size,0,'both channels can be muted');t.toggleMusic();assert(t.musicVoices.size>0,'music starts while effects remain muted');assert.equal(t.effectsGain.gain.value,0);
+t.toggleSound();assert.equal(t.effectsGain.gain.value,.12);t.toggleMusic();audio.advance(.2);assert.equal(t.musicVoices.size,0,'music off leaves effects enabled');assert(t.effectsEnabled);assert.equal(t.effectsGain.gain.value,.12);t.toggleMusic();assert(t.musicVoices.size>0);
+w.document.querySelector('[data-effects-toggle]').click();assert(!t.effectsEnabled);w.document.querySelectorAll('[data-effects-toggle]')[1].click();assert(t.effectsEnabled);
+canvas.focus();key('keydown','KeyM');key('keyup','KeyM');assert(!t.effectsEnabled);assert(t.musicVoices.size>0,'M affects effects only');t.toggleSound();
 t.g.p.xp=t.g.p.need;t.openUpgrade();assert.equal(t.state,'upgrade');assert.equal(t.musicWorld,1,'upgrade menu keeps a subdued score');t.unlockChoice();t.chooseUpgrade(0);
 t.completeWorld1();audio.advance(.2);t.enterWorld2();t.updateMusic();assert.equal(t.musicWorld,2,'Chloris switches music');
 const gardenNotes=[...t.musicVoices].filter(v=>!v.stopped).map(v=>v.osc.frequency.value);assert.notDeepEqual(gardenNotes,firstNotes,'worlds use different harmonies');
@@ -37,5 +43,19 @@ for(let i=0;i<12;i++){t.startRun(true,i%2+1);audio.advance(.3);t.updateMusic();a
 t.gameOver();audio.advance(.2);assert.equal(t.musicVoices.size,0,'game over releases the score');t.mainMenu();assert.equal(t.musicWorld,0);
 audio.state='suspended';t.startRun();assert.equal(contexts.length,1);audio.state='running';t.updateMusic();
 Object.defineProperty(w,'localStorage',{get(){throw new Error('blocked storage');}});t.toggleMusic();t.toggleMusic();
-assert.equal(errors.length,0);dom.window.close();console.log('Music checks passed: controls, storage, mute, pause, worlds, bounded scheduling, delayed clock, restart.');`;
+assert.equal(errors.length,0);dom.window.close();console.log('Music checks passed: controls, storage, independent effects/music, pause, worlds, bounded scheduling, delayed clock, restart.');`;
 new Function('require','__dirname','FakeAudioContext','contexts',header+checks)(localRequire,__dirname,FakeAudioContext,contexts);
+
+// Fresh-page combinations catch audio initialization bugs hidden by live toggles.
+for(const effects of [false,true])for(const music of [false,true]){
+ const coldHeader=header.replace('w.AudioContext=FakeAudioContext;',`w.AudioContext=FakeAudioContext;w.localStorage.setItem('void-wake-sound-v1','${effects?'on':'off'}');w.localStorage.setItem('void-wake-music-v1','${music?'on':'off'}');`);
+ const coldChecks=`
+ const previous=contexts.length;t.startRun(true);
+ assert.equal(contexts.length-previous,${effects||music?1:0},'only enabled channels initialize audio');
+ assert.equal(t.effectsEnabled,${effects});assert.equal(t.musicEnabled,${music});
+ assert.equal(t.musicVoices.size>0,${music},'saved music preference is independent of effects');
+ if(t.effectsGain)assert.equal(t.effectsGain.gain.value,${effects?.12:0},'saved effects preference sets the effects gain');
+ assert.equal(errors.length,0);dom.window.close();`;
+ new Function('require','__dirname','FakeAudioContext','contexts',coldHeader+coldChecks)(localRequire,__dirname,FakeAudioContext,contexts);
+}
+console.log('All four saved audio combinations passed on fresh pages.');

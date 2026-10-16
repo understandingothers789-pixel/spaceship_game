@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.4.1**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.4.2**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -132,3 +132,11 @@ Complete v2.4.0 HTML SHA-256: `dc2238272a4410a69090dcf2db005bac47dc6656dac8b4b19
 - Confirmed synchronized v2.4.1 release/package references, valid inline JavaScript, package/lock agreement, and no external runtime resources. Historical snapshots remain untouched. No combat balance changes were made.
 
 Complete v2.4.1 HTML SHA-256: `7ed1defc44343011fa11e93ea3bee9be3cfe02f5177e92960f8c86c6d77b0e7d`.
+
+## v2.4.2 independent audio verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with the existing locked dependencies. The gameplay suite reported no DOM/runtime errors; music scheduling, focus/input isolation, restart, hidden-tab and campaign regressions remain covered.
+- Extended deterministic Web Audio checks verify all four effects/music combinations during live toggling and on fresh pages with saved preferences. Music initializes with effects off, muting effects does not reset or silence the score, music off leaves the effects gain available, and both muted avoids initializing audio. Effects toggles on both settings panels and M work independently and stay synchronized with the HUD.
+- Checked inline JavaScript syntax, package/lock agreement, and current release descriptions. No runtime dependencies, external assets, gameplay balance changes, or snapshot edits. Audio APIs remain mocked for automated checks; audible output and actual browser/device behavior retain the limits recorded for v2.4.1.
+
+Complete v2.4.2 HTML SHA-256: `9672e538162b8d45b06ecc4de8299ba775ab3707cb4c5f709f00e83e1a960172`.

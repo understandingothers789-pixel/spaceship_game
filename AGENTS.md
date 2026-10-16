@@ -1,6 +1,6 @@
 # Void Wake — instructions for Codex
 
-Read `README.md`, `PROJECT_HISTORY.md`, and `VALIDATION.md` before changing the game. `CODEX_START_HERE.md` is the owner's setup guide. The active game is **root `game.html`**, currently v2.4.1. `history/snapshots/` contains real older files for reference; do not edit them or treat them as the active game.
+Read `README.md`, `PROJECT_HISTORY.md`, and `VALIDATION.md` before changing the game. `CODEX_START_HERE.md` is the owner's setup guide. The active game is **root `game.html`**, currently v2.4.2. `history/snapshots/` contains real older files for reference; do not edit them or treat them as the active game.
 
 ## Product constraints
 
@@ -13,7 +13,7 @@ Read `README.md`, `PROJECT_HISTORY.md`, and `VALIDATION.md` before changing the 
 - The bot must aim, shoot, collect XP, select upgrades, and transition worlds. It patrols the rectangle toward corners and changes its target quadrant at most every 4.2 seconds. It must keep moving while firing and can deviate to avoid danger or collect cores.
 - Keep the hidden-tab Worker/interval simulation with its single shared clock. Never add automatic blur/visibility pause. Explicit pause and upgrade screens still freeze combat. Browser suspension remains outside the game's control.
 - Bot upgrade screens and automatic transitions must not take keyboard focus. Preserve focus when the page is unfocused or a text editor is active; ignore game shortcuts typed into editors. World 2 starts with one petal bolt and earns two more through Threefold Bloom.
-- Preserve the original inline procedural soundtrack, quiet default music volume, independent music toggle/volume controls, M master mute, and saved music preferences. Keep audio-clock scheduling bounded and independent of gameplay timing; pause/game over/menu must release music voices.
+- Preserve the original inline procedural soundtrack, quiet default music volume, independent music toggle/volume controls, separate sound-effects and music switches (M toggles effects only), and saved music preferences. Keep audio-clock scheduling bounded and independent of gameplay timing; pause/game over/menu must release music voices.
 - Damage invulnerability, safe enemy spawning, upgrade input isolation, guarded resume, and complete restart resets must remain intact.
 
 ## Visual direction and latest feedback

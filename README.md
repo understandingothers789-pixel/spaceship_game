@@ -1,6 +1,6 @@
 # Void Wake
 
-A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.4.1**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
+A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.4.2**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -17,7 +17,7 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 | Space / Shift | Dash |
 | P / Escape | Pause or resume |
 | B / HUD bot button | Switch between human and bot control |
-| M | Toggle procedural sound |
+| M / HUD SFX button | Toggle sound effects independently of music |
 | 1 / 2 / 3, or click a card | Choose an offered upgrade |
 | Touch controls | Left side moves; right side aims; automatic aim assistance when not aiming; DASH evades |
 
@@ -30,7 +30,7 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
 - World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
 - The bot moves, aims, collects XP, selects upgrades, and enters World 2. It follows a corner-oriented patrol and changes target quadrants every 4.2 seconds.
-- Original procedural music: quiet drifting synths for space and a bell-like Chloris score. Start/pause screens offer a music toggle and volume slider (22% by default). M mutes all audio; music preferences persist locally. No downloaded tracks or audio files are used.
+- Original procedural music: quiet drifting synths for space and a bell-like Chloris score. Start/pause screens offer a music toggle and volume slider (22% by default). Sound effects and music have separate toggles; M and the HUD SFX button toggle effects only. Both preferences persist locally. No downloaded tracks or audio files are used.
 - Health, damage invulnerability, safe spawns, particles, effects, procedural sound, pause, restart, and a stored high score.
 - Worker/interval background simulation continues when the tab loses focus, subject to browser throttling or suspension.
 - Bot upgrades and automatic transitions preserve typing focus; game shortcuts ignore active text editors.
