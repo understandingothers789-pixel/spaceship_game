@@ -1,6 +1,6 @@
 # Void Wake
 
-A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.8.0**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
+A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot. Current version: **v2.8.1**. The current campaign includes World 1 and Chloris; more worlds can be added as the project grows.
 
 **Start with `CODEX_START_HERE.md` if you are new to GitHub or Codex.**
 
@@ -30,7 +30,7 @@ Open root `game.html` in Chrome, Brave, or another modern browser. Click **Play*
 - World 1 levels 41–50 ramp into a warden invasion. Level 50 ends with exactly 20 final wardens; clearing it unlocks World 2 permanently.
 - World 2: Chloris, a living garden, the Verdant Manta starting with one petal bolt, new enemies, seasonal hazards, 24 one-time adaptations, and its own finale.
 - The bot moves, aims, collects XP, selects upgrades, and enters World 2. It follows a corner-oriented patrol and changes target quadrants every 4.2 seconds.
-- Original cinematic adaptive music: synthesized strings, brass-like anthems, choir-like harmonies, war drums, swells, and stereo hall ambience. Five space-region arrangements and four Chloris-season themes build toward dedicated finales and escalating Heart phases. Arrangement changes enter on bar lines. The start and pause screens put an Audio Mix slider and one Overall Volume slider together near the top. Audio Mix balances SFX against music; Overall Volume turns all sound up or down together. The SFX and music mute switches remain independent, and M plus the HUD SFX button toggle effects only. Mix, overall volume, and mute settings persist locally. Music retains its quiet default level. No downloaded tracks or audio files are used.
+- Original cinematic adaptive music: synthesized strings, brass-like anthems, choir-like harmonies, war drums, swells, and stereo hall ambience. Five space-region arrangements and four Chloris-season themes build toward dedicated finales and escalating Heart phases. Arrangement changes enter on bar lines. The start and pause screens put an Audio Mix slider and one Overall Volume slider together near the top. Audio Mix balances SFX against music; Overall Volume turns all sound up or down together. The SFX and music mute switches remain independent, and M plus the HUD SFX button toggle effects only. Mix, overall volume, and mute settings persist locally. The centered mix gives music and SFX equal mix weight. No downloaded tracks or audio files are used.
 - Health, damage invulnerability, safe spawns, particles, effects, procedural sound, pause, restart, and a stored high score.
 - Worker/interval background simulation continues when the tab loses focus, subject to browser throttling or suspension.
 - Bot upgrades and automatic transitions preserve typing focus; game shortcuts ignore active text editors.

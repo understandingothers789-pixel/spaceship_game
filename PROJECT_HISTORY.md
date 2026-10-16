@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.8.0.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.8.1.
 
 ## Original brief
 
@@ -46,7 +46,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 | v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
-| **v2.8.0 — current** | A visible SFX/music balance control plus one master volume slider for all audio; channel mute switches remain independent. |
+| **v2.8.1 — current** | A true 50/50 center mix with a separate overall volume control for all audio. |
+| v2.8.0 | Added the visible balance control and one shared volume slider, removing separate SFX/music levels. |
 | v2.7.0 | A visible SFX/music balance slider on start and pause screens, with separate channel volume sliders. |
 | v2.6.0 | Cinematic synthesized orchestration, anthemic lead lines, war drums and hall ambience; separate saved SFX/music volume sliders. |
 | v2.5.0 | Adaptive region/season arrangements, level and boss intensity, dedicated finale motifs, and musical bar-line transitions. |
@@ -176,3 +177,8 @@ The owner could not find the balance controls because the independent volume sli
 ## v2.8.0 shared overall audio volume — October 16, 2026
 
 The owner clarified that they want two volume controls: one to balance SFX against music, and one overall level for all sound. Start and pause screens now place **AUDIO MIX** and **OVERALL VOLUME** together near the top. The shared gain node sits after the SFX and music paths join, so the overall slider changes both channels and the stereo reverb together. Separate per-channel volume sliders were removed; the SFX and MUSIC mute buttons remain independent, and M still toggles SFX. The overall slider restores an older saved Music volume value when no new overall setting exists, so existing users keep their selected level.
+
+
+## v2.8.1 true SFX/music balance — October 16, 2026
+
+Removed the fixed quiet-only music trim from the balance calculation so the displayed SFX/MUSIC percentages now represent the actual equal-power crossfade weights. At the center, both channels have equal weight; moving toward either end fades toward that channel. The Overall Volume control remains downstream of both channels, including the music hall, and scales all sound together. The prior Music volume preference still initializes the overall level for existing players.

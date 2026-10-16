@@ -1,6 +1,6 @@
 {
   "name": "void-wake",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "private": true,
   "description": "A spaceship survival game in one offline HTML file, with an expanding universe of worlds, unique upgrades, evolving enemies, procedural graphics and sound, and an automated bot pilot.",
   "scripts": {

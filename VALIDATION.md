@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.8.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.8.1**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -178,3 +178,12 @@ Complete v2.7.0 HTML SHA-256: `c1c60c620505303bc1e93942384f95f0e6c95ccdfa23a8320
 - Inline JavaScript and test syntax passed. No new packages or external assets. JSDOM checks the rendered markup and mocked Web Audio routing, not physical-browser layout or audible output; no browser binary was available.
 
 Complete v2.8.0 HTML SHA-256: `0356716c5772529ff1dae114b7505dd610e56aac64f3f20afbbe632df08f095f`.
+
+
+## v2.8.1 true balance calibration verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with the locked dependencies. The gameplay stress simulations and all music scheduling, campaign, control, and restart regressions passed.
+- The audio tests verify that the centered balance assigns equal crossfade weights, endpoints isolate the chosen channel, the single overall gain controls both channel paths, and a previous Music volume preference migrates to the overall level.
+- Inline JavaScript, tests, release metadata, and documentation links passed checks. Web Audio is mocked in tests; physical playback and real-browser layout were not available for review.
+
+Complete v2.8.1 HTML SHA-256: `1e348346dce22a6e8070eafc7009629b1f9013850d6786b2e6ccea083be4b666`.
