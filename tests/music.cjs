@@ -4,11 +4,11 @@ const root=path.resolve(__dirname,'..'),localRequire=createRequire(path.join(roo
 // Audio is mocked here: these checks do not claim audible device playback.
 const contexts=[];
 class Param{constructor(value=0){this.value=value;this.events=[];}setValueAtTime(value,time){this.add(value,time);return this;}linearRampToValueAtTime(value,time){this.add(value,time);return this;}exponentialRampToValueAtTime(value,time){if(value<=0)throw Error('invalid exponential target');this.add(value,time);return this;}setTargetAtTime(value,time,constant){if(!(constant>0))throw Error('invalid smoothing');this.add(value,time);return this;}cancelScheduledValues(time){this.events=this.events.filter(e=>e.time<time);return this;}add(value,time){if(!Number.isFinite(value)||!Number.isFinite(time)||time<0)throw Error('invalid audio automation');this.value=value;this.events.push({value,time});}}
-class Node{constructor(){this.gain=new Param();this.frequency=new Param();this.pan=new Param();this.links=[];}connect(node){this.links.push(node);return node;}disconnect(){this.links=[];}}
-class Source extends Node{constructor(context){super();this.context=context;context.sources.push(this);this.stopAt=Infinity;}start(time=0){if(time<this.context.currentTime-1e-8)throw Error('scheduled in the past');this.startAt=time;}stop(time){this.stopAt=time;}}
-class FakeAudioContext{constructor(){this.currentTime=0;this.sampleRate=22050;this.state='running';this.destination=new Node();this.sources=[];contexts.push(this);}createGain(){return new Node();}createBiquadFilter(){return new Node();}createStereoPanner(){return new Node();}createOscillator(){return new Source(this);}createBufferSource(){return new Source(this);}createBuffer(channels,length){return{getChannelData:()=>new Float32Array(length)};}resume(){this.state='running';return Promise.resolve();}advance(seconds){this.currentTime+=seconds;for(const source of this.sources)if(!source.ended&&source.stopAt<=this.currentTime){source.ended=true;source.onended?.();}}}
+class Node{constructor(){this.gain=new Param();this.frequency=new Param();this.pan=new Param();this.detune=new Param();this.links=[];}connect(node){this.links.push(node);return node;}disconnect(){this.links=[];}}
+class Source extends Node{constructor(context){super();this.context=context;context.sources.push(this);this.stopAt=Infinity;}setPeriodicWave(wave){this.wave=wave;}start(time=0){if(time<this.context.currentTime-1e-8)throw Error('scheduled in the past');this.startAt=time;}stop(time){this.stopAt=time;}}
+class FakeAudioContext{constructor(){this.currentTime=0;this.sampleRate=22050;this.state='running';this.destination=new Node();this.sources=[];contexts.push(this);}createPeriodicWave(real,imag){if(real.length!==imag.length)throw Error('invalid harmonics');return{real,imag};}createConvolver(){return new Node();}createGain(){return new Node();}createBiquadFilter(){return new Node();}createStereoPanner(){return new Node();}createOscillator(){return new Source(this);}createBufferSource(){return new Source(this);}createBuffer(channels,length){const data=Array.from({length:channels},()=>new Float32Array(length));return{length,numberOfChannels:channels,getChannelData:i=>data[i]};}resume(){this.state='running';return Promise.resolve();}advance(seconds){this.currentTime+=seconds;for(const source of this.sources)if(!source.ended&&source.stopAt<=this.currentTime){source.ended=true;source.onended?.();}}}
 let header=fs.readFileSync(path.join(__dirname,'qa.cjs'),'utf8').split("assert(t,'test hooks loaded')")[0];
-header=header.replace('window.test={','window.test={musicArrangement,get musicScene(){return musicScene},updateMusic,stopMusic,toggleMusic,toggleSound,get effectsGain(){return master},get effectsEnabled(){return sound},get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
+header=header.replace('window.test={','window.test={tone,crunch,musicArrangement,get musicScene(){return musicScene},get musicWaves(){return musicWaves},get musicReverb(){return musicReverb},get musicOutput(){return musicOutput},get effectsVolume(){return effectsVolume},updateMusic,stopMusic,toggleMusic,toggleSound,get effectsGain(){return master},get effectsEnabled(){return sound},get musicVoices(){return musicVoices},get musicStep(){return musicStep},get musicNext(){return musicNext},get musicWorld(){return musicWorld},get musicVolume(){return musicVolume},get musicEnabled(){return musicEnabled},');
 header=header.replace('beforeParse(w){','beforeParse(w){w.AudioContext=FakeAudioContext;');
 const checks=`
 assert.equal(contexts.length,0,'loading a page does not autoplay or create an audio context');
@@ -17,17 +17,21 @@ assert.equal(w.document.querySelectorAll('[data-music-toggle]').length,2);
 assert.equal(w.document.querySelectorAll('[data-music-volume]').length,2);
 t.startRun(true);assert.equal(contexts.length,1);const audio=contexts[0];
 assert(t.musicVoices.size>0,'Play schedules the score');assert.equal(t.musicWorld,1);
-const firstNotes=[...t.musicVoices].map(v=>v.osc.frequency.value);assert(firstNotes.every(n=>n>0&&Number.isFinite(n)));
+const firstNotes=[...t.musicVoices].filter(v=>!v.osc.buffer).map(v=>v.osc.frequency.value);assert(firstNotes.every(n=>n>0&&Number.isFinite(n)));
 for(let i=0;i<2400;i++){audio.advance(.25);t.updateMusic();assert(t.musicVoices.size<=32,'score stays bounded');}
+assert.equal(Object.keys(t.musicWaves).length,3,'three cached orchestral timbres');assert(t.musicReverb.buffer.numberOfChannels===2,'stereo hall impulse');assert.notDeepEqual(t.musicReverb.buffer.getChannelData(0),t.musicReverb.buffer.getChannelData(1),'hall channels differ');assert([...t.musicVoices].some(v=>v.osc.wave),'score uses harmonic orchestral waves');
+const effectSlider=w.document.querySelector('[data-effects-volume]');effectSlider.value='25';effectSlider.dispatchEvent(new w.Event('input'));assert.equal(t.effectsVolume,.25);assert.equal(t.effectsGain.gain.value,.03);assert.equal(w.localStorage.getItem('void-wake-effects-volume-v1'),'0.25');for(const input of w.document.querySelectorAll('[data-effects-volume]'))assert.equal(input.value,'25');const musicLevel=t.musicVolume;assert.equal(musicLevel,.22,'SFX slider never changes music volume');
+effectSlider.value='0';effectSlider.dispatchEvent(new w.Event('input'));assert.equal(t.effectsGain.gain.value,0);const sourceCount=audio.sources.length;t.tone(440,440,.1);t.crunch();assert.equal(audio.sources.length,sourceCount,'zero SFX volume does not create silent effects voices');assert(t.musicVoices.size>0,'SFX volume zero preserves music');effectSlider.value='100';effectSlider.dispatchEvent(new w.Event('input'));assert.equal(t.effectsGain.gain.value,.12);
 const before=t.musicStep;audio.advance(120);t.updateMusic();assert(t.musicStep-before<=4,'a delayed tab never bursts through missed notes');
 t.pauseRun();assert.equal(t.musicWorld,0);const stopped=[...t.musicVoices].map(v=>v.osc.stopAt);audio.advance(.05);t.updateMusic();assert.deepEqual([...t.musicVoices].map(v=>v.osc.stopAt),stopped,'repeated inactive ticks do not postpone note cleanup');audio.advance(.2);assert.equal(t.musicVoices.size,0);
 t.resumeRun();t.updateMusic();assert(t.musicVoices.size>0);
 const slider=w.document.querySelector('[data-music-volume]');slider.value='9';slider.dispatchEvent(new w.Event('input',{bubbles:true}));
-assert.equal(t.musicVolume,.09);assert.equal(w.localStorage.getItem('void-wake-music-volume-v1'),'0.09');
+assert.equal(t.musicVolume,.09);assert.equal(t.effectsVolume,1,'music slider never changes effects volume');assert.equal(w.localStorage.getItem('void-wake-music-volume-v1'),'0.09');
 for(const input of w.document.querySelectorAll('[data-music-volume]'))assert.equal(input.value,'9');
 slider.focus();const x=t.g.p.x;key('keydown','ArrowRight');t.update(.016);assert.equal(t.g.p.x,x,'range keyboard input never moves the ship');key('keyup','ArrowRight');
-slider.value='0';slider.dispatchEvent(new w.Event('input'));audio.advance(.2);assert.equal(t.musicVoices.size,0,'zero volume releases voices');
+slider.value='0';slider.dispatchEvent(new w.Event('input'));audio.advance(.2);assert.equal(t.musicVoices.size,0,'zero volume releases voices');assert.equal(t.musicOutput.gain.value,0,'music mute also gates the reverb tail');
 slider.value='22';slider.dispatchEvent(new w.Event('input'));assert(t.musicVoices.size>0);
+slider.value='100';slider.dispatchEvent(new w.Event('input'));assert.equal(t.musicVolume,1,'full music range is available');slider.value='22';slider.dispatchEvent(new w.Event('input'));
 t.toggleMusic();assert(!t.musicEnabled);assert.equal(w.localStorage.getItem('void-wake-music-v1'),'off');audio.advance(.2);assert.equal(t.musicVoices.size,0);t.toggleMusic();assert(t.musicEnabled);assert(t.musicVoices.size>0);
 const musicPosition=t.musicStep;t.toggleSound();audio.advance(.2);t.updateMusic();assert(!t.effectsEnabled);assert.equal(t.effectsGain.gain.value,0);assert(t.musicVoices.size>0,'effects off leaves music playing');assert(t.musicStep>=musicPosition,'effects toggle does not restart music');
 for(const button of w.document.querySelectorAll('[data-effects-toggle]')){assert.equal(button.textContent,'SFX: OFF');assert.equal(button.getAttribute('aria-pressed'),'false');}
@@ -39,7 +43,7 @@ canvas.focus();key('keydown','KeyM');key('keyup','KeyM');assert(!t.effectsEnable
 t.g.p.xp=t.g.p.need;t.openUpgrade();assert.equal(t.state,'upgrade');assert.equal(t.musicWorld,1,'upgrade menu keeps a subdued score');t.unlockChoice();t.chooseUpgrade(0);
 t.completeWorld1();audio.advance(.2);t.enterWorld2();t.updateMusic();assert.equal(t.musicWorld,2,'Chloris switches music');
 const gardenNotes=[...t.musicVoices].filter(v=>!v.stopped).map(v=>v.osc.frequency.value);assert.notDeepEqual(gardenNotes,firstNotes,'worlds use different harmonies');
-for(let i=0;i<12;i++){t.startRun(true,i%2+1);audio.advance(.3);t.updateMusic();assert(t.musicVoices.size<=32);}assert.equal(contexts.length,1,'restart reuses one audio graph');
+for(let i=0;i<12;i++){t.startRun(true,i%2+1);audio.advance(.3);t.updateMusic();assert(t.musicVoices.size<=32);}assert.equal(contexts.length,1,'restart reuses one audio graph');assert.equal(t.musicOutput.gain.value,1,'music output returns after mute and restart');
 
 // Exercise adaptive arrangements through the real scheduler in both campaigns.
 const pump=seconds=>{for(let i=0;i<Math.ceil(seconds*10);i++){audio.advance(.1);t.updateMusic();assert(t.musicVoices.size<=32,'every arrangement respects the music voice budget');}};
@@ -75,3 +79,12 @@ for(const effects of [false,true])for(const music of [false,true]){
  new Function('require','__dirname','FakeAudioContext','contexts',coldHeader+coldChecks)(localRequire,__dirname,FakeAudioContext,contexts);
 }
 console.log('All four saved audio combinations passed on fresh pages.');
+
+const mixedHeader=header.replace('w.AudioContext=FakeAudioContext;',"w.AudioContext=FakeAudioContext;w.localStorage.setItem('void-wake-effects-volume-v1','0.4');w.localStorage.setItem('void-wake-music-volume-v1','0.6');");
+new Function('require','__dirname','FakeAudioContext','contexts',mixedHeader+`
+ t.startRun(true);assert.equal(t.effectsVolume,.4);assert.equal(t.musicVolume,.6);assert.equal(t.effectsGain.gain.value,.048);
+ for(const input of w.document.querySelectorAll('[data-effects-volume]'))assert.equal(input.value,'40');for(const input of w.document.querySelectorAll('[data-music-volume]'))assert.equal(input.value,'60');
+ t.toggleSound();assert.equal(t.effectsGain.gain.value,0);t.toggleSound();assert.equal(t.effectsGain.gain.value,.048,'unmuting restores the chosen mix');
+ const room=t.musicReverb;t.startRun(true);assert.equal(t.musicReverb,room,'restart reuses the hall effect');dom.window.close();
+ console.log('Saved custom mix, zero-volume effects, orchestral timbres and reverb gating passed.');
+`)(localRequire,__dirname,FakeAudioContext,contexts);

@@ -1,6 +1,6 @@
 # Validation and technical handoff
 
-Current game: **v2.5.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
+Current game: **v2.6.0**. The original GitHub handoff was v2.3.1; the releases below document the surplus XP, bot avoidance, typing-focus, World 2 starting-shot, buried-creature targeting, control/progress improvements, v2.4.0 combat balance, and the v2.4.1 procedural soundtrack.
 
 ## How to run the portable suite
 
@@ -150,3 +150,13 @@ Complete v2.4.2 HTML SHA-256: `9672e538162b8d45b06ecc4de8299ba775ab3707cb4c5f709
 - Audio tests use a mocked Web Audio clock. These results establish arrangement selection and scheduling behavior, not an audible quality review. No browser binary was available; actual device playback, mix preferences, and browser/OS background suspension remain listening/device checks. No real-browser validation is claimed for this release.
 
 Complete v2.5.0 HTML SHA-256: `c9f841eff716c90633aad2df8fecafc9080e5d21669a3aaaaf4a2c27ec27ab12`.
+
+## v2.6.0 cinematic audio and mixer verification — October 16, 2026
+
+- Full `npm test` passed under Node v24.19.0 with existing locked dependencies. The gameplay suite reported no DOM/runtime errors, including its 240/120/180-second simulations. Adaptive audio, all channel combinations, input/focus, campaign transitions, finales, and restart coverage passed.
+- Extended the Web Audio test double to represent cached periodic waves, oscillator detuning, persistent multichannel buffers, and a convolution node. Tests confirm the real inline score uses its harmonic instruments, creates a two-channel nonidentical hall impulse, gates the hall output on mute, and reuses the room across restarts. Noise sources are distinguished from pitched oscillator notes in the assertions.
+- Mixer checks verify independent 0–100% ranges, synchronized start/pause readouts, SFX changes leaving music unchanged and vice versa, zero SFX avoiding new effects sources, full music range, saved 40% SFX / 60% music restoration on a fresh page, and unmute restoring the chosen gain. Existing 32-voice, delayed-clock, pause cleanup, region/season/boss/Heart, and gameplay-isolation checks remain passing.
+- Inline/test syntax, release and lockfile metadata, relative documentation links, and whitespace checks passed. No runtime packages or external assets were added; archived snapshots and combat balance are unchanged.
+- Audio APIs are simulated for these checks; convolution output, audible mix quality, and real device playback were not auditioned. No browser binary was available in this workspace. Listening on the owner's browser remains the check for subjective orchestral character and the desired music/effects balance.
+
+Complete v2.6.0 HTML SHA-256: `423a142e023583b5c3ed391842b48cb4c3c6610e5040a5669c22e31fa3326eb5`.

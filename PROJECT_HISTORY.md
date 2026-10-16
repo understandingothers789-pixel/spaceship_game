@@ -1,6 +1,6 @@
 # Void Wake — relevant project history
 
-This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.5.0.
+This handoff preserves the visible project's requirements, decisions, real earlier snapshots, and latest state. It is a curated development history, not the full chat transcript and not an invented Git commit history. Current source: root `game.html`, v2.6.0.
 
 ## Original brief
 
@@ -46,7 +46,8 @@ The removed lower-left opening ring is decorative scenery, distinct from actual 
 | v2.3.3 | Fixed the bot hovering beside World 2 warning circles near arena edges. It now chooses a consistent detour with space to move. Corrected the shared projectile dodge direction so it turns away from incoming shots. |
 | v2.3.4 | Changed World 2 to one starting petal bolt at the owner’s request; Threefold Bloom adds two. Guarded UI focus so bot upgrades and automatic transitions do not interrupt typing, and ignored game shortcuts in text editors. |
 | v2.3.5 | Fixed buried burrowers intercepting projectiles/guidance/chains and underground separation; touch aiming no longer overrides bot targets. Restored Space activation for focused buttons. Added visible XP/build progress, a pause-screen installed-build list, and synchronized touch/mouse/bot instructions. |
-| **v2.5.0 — current** | Adaptive region/season arrangements, level and boss intensity, dedicated finale motifs, and musical bar-line transitions. |
+| **v2.6.0 — current** | Cinematic synthesized orchestration, anthemic lead lines, war drums and hall ambience; separate saved SFX/music volume sliders. |
+| v2.5.0 | Adaptive region/season arrangements, level and boss intensity, dedicated finale motifs, and musical bar-line transitions. |
 | v2.4.2 | Independent sound-effects and music toggles; M controls effects only. |
 | v2.4.1 | Original quiet procedural soundtrack, world-specific harmonies, independent music controls, persisted preferences, and bounded audio-clock scheduling. |
 | v2.4.0 | Larger formations from levels 9/25, stronger level-based enemies, smaller escort XP cores, scarcer late repairs, and selective damage/cannon/knockback/defense/healing tuning. Lifeweaver limits rapid kill healing. Added repeatable ordinary-health balance simulations. |
@@ -153,3 +154,13 @@ Reworked the soundtrack to suit the current environment and encounter instead of
 - Sustained chords, melodic motifs, pulsing bass, synthesized kicks, and filtered noise percussion are generated inline. Eight-bar phrases include rests and variation. Musical changes enter at the next bar line with smoothed filter changes; the scheduler does not restart the score on every level or enemy change.
 - Retained the quiet volume setting, separate music/effects switches, saved preferences, upgrade ducking, pause/menu/game-over release, one shared background clock, and a 32-voice music cap. Music reads campaign state without modifying or advancing it. No external assets, packages, or gameplay balance changes.
 - Expanded deterministic audio regressions across every region and season, level pressure, ordinary bosses, both finales, Heart phases, bar-line transitions, note bounds, and gameplay isolation. Evidence and limits are in `VALIDATION.md`.
+
+## v2.6.0 cinematic score and audio mixer — October 16, 2026
+
+The owner requested a more epic score and a way to change the balance between effects and music.
+
+- Added cached harmonic waveforms for synthesized strings, brass-like leads, and choir-like harmony. Broader stereo chord voicings and slight instrumental detuning support sustained anthem phrases above the existing moving motifs. These are synthesized timbres, not sampled orchestral recordings.
+- Added deeper taiko-like drum hits, cymbal accents, and rising noise swells around phrase endings. A short generated stereo hall impulse gives the mix space. The room and instrument resources are created once and reused on restart. Deterministic soundtrack noise/impulse creation does not consume gameplay randomness.
+- Preserved all adaptive region/season/level/boss/finale cues, quiet default music, independent switches, upgrade ducking, the existing audio clock, and the 32-voice cap. The final music-output gate fades reverb along with notes when pausing or muting.
+- Start and pause screens now have separate SFX and music sliders, both 0–100%, with synchronized percentage readouts and persisted preferences. SFX defaults to the existing effects gain at 100%; music stays at 22%. Muting and unmuting restores each chosen level. Adjusting one slider never changes the other. SFX at zero avoids creating inaudible effects voices.
+- Extended audio regressions to cover harmonic-wave use, stereo room creation/gating/reuse, independent gain changes, custom-mix persistence, full music-volume range, zero-level effects, and all prior channel/scheduling/campaign checks. No gameplay balance changes or runtime packages.
